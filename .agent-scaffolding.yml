@@ -1,0 +1,54 @@
+# Configuration of agent-scaffolding.
+# Written by the agent-scaffolding agent skill. Commit this file.
+# This repository applies its own skill to itself.
+
+skill_version: "0.1.0"
+
+project:
+  name: "agent-scaffolding"
+  description: "Agent Skill that bootstraps new projects or applies to existing projects. It gives a scaffold that is prepared for agents and follows best practices"
+  type: documentation       # documents and shell scripts. No build system.
+  languages: [markdown, bash]
+  language_standard: ""
+  platforms: [linux, macos]
+  license: "MIT"
+  copyright: "Copyright (c) 2026 Deniz Eren <deniz.eren@outlook.com>"
+
+operations:
+  commit_mode: autonomous
+  build_system: none
+  test_framework: none
+  linter: shellcheck
+  formatter: none
+  build_convention: none
+  dev_environment: none
+
+# "current_user" = the name and the email of the current user. The agents read
+# them from the git configuration of the environment (git config user.name,
+# git config user.email). A project can also put a fixed name and email here.
+identity:
+  git_author_name: current_user
+  git_author_email: current_user
+
+modules:
+  dev_environment: false
+  build_agents: false
+  tool_configs: false
+  boilerplate: false
+  copyright: false
+  agent_platforms: []
+
+specs:
+  commits: true
+  semver: true
+  skills: true
+
+# The templates contain placeholders on purpose. The specs are copies with no changes.
+exclude_paths: [assets/repo, references/specs]
+
+pre_existing_documents:
+  - label: License
+    source: LICENSE.md
+    destination: LICENSE.md
+    policy: immutable
+    notes: ""

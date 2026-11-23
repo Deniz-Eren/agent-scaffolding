@@ -1,0 +1,60 @@
+# agent-scaffolding configuration.
+# Written by the agent-scaffolding agent skill. Commit this file.
+# After you change this file, apply the skill again in "apply" mode.
+
+skill_version: "{{SKILL_VERSION}}"
+
+project:
+  name: "{{PROJECT_NAME}}"
+  description: "{{PROJECT_DESCRIPTION}}"
+  type: software            # software | documentation | mixed
+  languages: []             # example: [python], [c++, python], [markdown]
+  language_standard: ""     # example: "Python 3.12", "C++20"
+  platforms: []             # target OS or runtime, for example [linux]
+  license: "{{LICENSE_NAME}}"
+  license_file: "{{LICENSE_FILE}}"
+  copyright: "{{COPYRIGHT_LINE}}"
+
+# Build: cmake, make, poetry, npm, cargo, gradle, go.
+
+# Test: pytest, gtest, jest, vitest, cargo. Lint: clang-tidy, ruff, pylint, eslint, clippy.
+
+# Format: clang-format, ruff, black, prettier, rustfmt.
+
+operations:
+  commit_mode: autonomous   # autonomous | hitl
+  build_system: none
+  test_framework: none
+  linter: none
+  formatter: none
+  build_convention: none    # out-of-source | in-source
+  dev_environment: auto     # auto | native | containerized | none
+
+# "current_user" = the name and the email of the current user. The agents read
+# them from the git configuration of the environment (git config user.name,
+# git config user.email). A project can also put a fixed name and email here.
+identity:
+  git_author_name: current_user
+  git_author_email: current_user
+
+modules:                    # defaults: references/INTERVIEW.md §3
+  dev_environment: true
+  build_agents: true
+  tool_configs: true
+  boilerplate: false        # use this only for new software with no source files
+  copyright: true
+  agent_platforms: []       # links for platforms that do not read .agents/skills
+
+specs:                      # specifications that the skill copies into the project
+  commits: true
+  semver: true
+  skills: true
+
+exclude_paths: []           # paths that verify.sh does not examine, for example [vendor, third_party]
+
+pre_existing_documents: []
+#  - label: License
+#    source: ~/templates/LICENSE.md
+#    destination: LICENSE.md
+#    policy: immutable       # immutable | append-only | editable
+#    notes: ""

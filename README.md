@@ -1,112 +1,108 @@
-# AI Scaffolding Bootstrap
+# agent-scaffolding
 
-## Quick Start — Using the Bootstrap Prompt
+An [Agent Skill](https://agentskills.io) that prepares a project for work with
+AI agents. It gives the project a structure that follows best practices:
+governance, state documents, project skills, a development environment, and
+build agents. You can use it with all languages and all agent platforms.
 
-The deliverable of this project is [prompts/bootstrap-prompt.md](prompts/bootstrap-prompt.md) — a single prompt you give to your AI agent to generate a complete, production-ready project scaffold.
+The skill has two modes:
 
-### How to Use It
+- **Bootstrap**: scaffolds a new project from an empty directory.
+- **Apply**: audits an existing project, gives a gap report, and applies only
+  the changes that you accept. It does not overwrite your files without your
+  consent.
 
-1. **Configure the tunable sections.** The tables at the top of the prompt (`Project Overview` and `Project Operational Settings`) let you define your project name, languages, build system, testing framework, and more. Fill these in with your desired settings before running the prompt.
+The agent holds an interview with you. It finds what it can from the project,
+and records your answers in `.agent-scaffolding.yml`. Subsequent runs use these
+values to apply the scaffold again, or to upgrade it.
 
-2. **Configure pre-existing documents.** If you have files that need to be preserved and integrated into the scaffold (licenses, skill blueprints, commit rules, etc.), add entries to the `Pre-Existing Documents` table with their `Source Path` and `Destination Path`. The agent will copy them verbatim and apply any needed relative link fixes.
+## What it installs
 
-3. **Recommended: wire up the example documents.** The `Pre-Existing Documents` table ships with sample entries prefixed with `*Example: *`. Delete the `Example: ` prefix from any of these rows and set their `Source Path` to point to the matching documents in this repository. This repository already includes several specification documents that govern how the scaffold is built:
+**Core** (always):
 
-- `docs/COMMITS.md` — Defines commit message rules (Conventional Commits specification).
-- `docs/SKILLS.mdx` — Specifies how skill files should be structured (headers, formatting rules).
-- `docs/semver.md` — Defines the semantic versioning scheme to follow.
-- `docs/THIRD-PARTY-NOTICES.md` — Template for tracking third-party dependencies and licenses; also contains the above specification documents.
+- `AGENTS.md`: commit modes (AUTONOMOUS or HITL), the Predict → Act → Verify
+  workflow, failure modes, CLI boundaries, the git protocol with `Assisted-by:`
+  footers, and a pre-commit checklist
+- State documents in `docs/`: TASKS, VISION, DECISIONS (ADRs), CONVENTIONS,
+  ARCHITECTURE and THIRD-PARTY-NOTICES
+- `CHANGELOG.md` at the root: the important changes of the skill, in the Keep a
+  Changelog format
+- Project skills in `docs/skills/` (`create-skill`, `git`, `state-management`,
+  `keepachangelog`), with the specifications that they use (Conventional
+  Commits, SemVer, Agent Skills)
+- The rules for DRY, document headers, links, and names, plus the import of
+  existing documents
+- The standard agent link `.agents/skills` → `docs/skills`, so that agent
+  platforms find the project skills
 
-The prompt endorses specification-based working — even for specifying how skills are created. Point these example rows to the matching documents, and the prompt will follow your specifications when generating the scaffold, producing skill files, commit history, versioning, and dependency tracking that all conform to your rules.
+**Optional modules** (you select them. The defaults change with the project
+type.):
 
-That's all. Run the prompt, and your AI agent will produce a full project structure with governance, skills, tool configs, dev environment, and boilerplate — all tailored to your configuration.
+- **`dev_environment`:** A Python venv, or a Podman/Docker Compose container,
+  with a skill
+- **`build_agents`:** Build and formatter scripts, plus subagent definitions
+- **`tool_configs`:** Small linter and formatter configs that agree with the
+  installed versions
+- **`boilerplate`:** A library, an executable, and tests. The build config alone
+  contains the version.
+- **`copyright`:** Copyright headers in the source files
+- **`agent_platforms`:** Links for agent platforms that do not read
+  `.agents/skills`
 
----
+## Install
+
+Clone the repository into a skills directory. The directory name must be
+`agent-scaffolding`. The standard location is `~/.agents/skills/`. Some agent
+platforms read their own directory. Put a copy or a link there when it is
+necessary for your platform.
+
+Example:
+
+```bash
+git clone https://github.com/Deniz-Eren/agent-scaffolding \
+  ~/.agents/skills/agent-scaffolding
+```
+
+## Use
+
+Start your agent in the target directory. Then tell it to do one of these tasks:
+
+- "Use agent-scaffolding to bootstrap a new Python CLI project here."
+- "Apply agent-scaffolding to this repository. Give me the gap report first."
+- "Audit this project against agent-scaffolding."
+
+You can also run the scripts in the skill directly:
+
+```bash
+# read-only gap report
+bash ~/.agents/skills/agent-scaffolding/scripts/audit.sh .
+# check of the project against the rules
+bash ~/.agents/skills/agent-scaffolding/scripts/verify.sh .
+```
+
+For the full procedure, see [SKILL.md](SKILL.md). For the changes in each
+version, see [CHANGELOG.md](CHANGELOG.md).
 
 ## Development Environment
 
-This project is **Documentation-only** — no build system, no source code, and no development environment setup is required.
+This project contains only documents and shell scripts. A build system or a
+development environment is not necessary. To make sure that the scripts are
+correct, run `shellcheck scripts/*.sh assets/repo/scripts/*.sh`. To validate the
+skill, run the Agent Skills validator (`agentskills validate <dir>`).
 
-No commands are needed to set up a development environment for this project.
+## Repository governance
 
----
-
-## How This Prompt Was Built
-
-> **Disclaimer:** This prompt was built and iteratively refined using only C/C++, CMake, and Podman Compose configurations during the self-improvement loop. However, explicit focus and care were taken to ensure the result is not limited to these selections — every rule and instruction is designed to be language- and tool-agnostic, so it works just as well for Python, Rust, TypeScript, or any other stack.
-
-This bootstrap prompt was not hand-written — it was iteratively developed, stress-tested, and refined by the author (with AI assistance) through a structured feedback loop using the prompts in this repository.
-
-The process generates 6 independent scaffolding projects (alpha, beta, gamma, delta, epsilon, and zeta) from the current version of the prompt, then asks the AI to critique the prompt itself. The AI identifies what worked, what failed, and suggests concrete improvements. The prompt is refined, assessed by a fresh session using an assessment rubric, and the cycle repeats until the output is consistently reliable.
-
----
-
-## How the Prompt Was Built (Manual Process)
-
-> **Important:** The 6-project stress test and feedback loops described below were **manual steps performed by the author** to iteratively refine [prompts/bootstrap-prompt.md](prompts/bootstrap-prompt.md). This scaffolding has **no mechanism** to automatically generate, test, or assess other projects. The prompts in `prompts/` are standalone templates you can use (or not use) at your discretion.
-
-```text
- ┌───────────────────────────────────────────────────────────────┐
- │          Manual Process — Author-Driven                       │
- │                                                               │
- │  ┌──────────────┐    ┌───────────────┐    ┌────────────────┐  │
- │  │  Create &    │───▶│  Generate 6   │───▶│  Retrospective │  │
- │  │  Refine      │    │  Scaffoldings │    │  Analysis      │  │
- │  │  Prompt &    │    │  (alpha→zeta) │    │  (critique     │  │
- │  │  Rubric      │    │               │    │   prompt)      │  │
- │  └──────────────┘    └───────────────┘    └────────┬───────┘  │
- │         ▲                                          │          │
- │         │                                         Refine      │
- │         │                                          │          │
- │         │                                          ▼          │
- │         │                            ┌──────────────────┐     │
- │         │                            │  Fresh Assessment│     │
- │         │                            │  (blindly score  │     │
- │         │                            │   all 6 with     │     │
- │         │                            │   the rubric)    │     │
- │         │                            └────────┬─────────┘     │
- │         │                                     │               │
- │         └─────────────────────────────────────┘               │
- │                                                               │
- └───────────────────────────────────────────────────────────────┘
-```
-
-The author performed these manual steps:
-
-1. **Prompt & Rubric Creation**
-   - The author designed the initial **Scaffolding Bootstrap Prompt** and **Assessment Rubric**.
-
-2. **Scaffolding Generation (Manual)**
-   - The author ran the prompt 6 independent times, producing separate scaffolding projects: `alpha/`, `beta/`, `gamma/`, `delta/`, `epsilon/`, and `zeta/`.
-
-3. **Retrospective Analysis (Manual)**
-   - The author asked an AI to critically analyze the prompt using [prompts/retro-prompt.md](prompts/retro-prompt.md), identifying what worked, what failed, and suggesting improvements.
-   - The author refined the prompt based on the analysis.
-
-4. **Independent Assessment (Manual)**
-   - The author asked a fresh AI session to evaluate all 6 scaffoldings using the rubric via [prompts/rubric-prompt.md](prompts/rubric-prompt.md).
-
-5. **Feedback & Iteration (Manual)**
-   - The author fed the assessment report and retrospective insights back into the prompt, iterating until the bootstrap consistently produced high-quality results.
-
-**You are free to repeat this process** with the prompts in `prompts/`, adapting them to your own workflow and project types. There is no automation — the prompts are your tools, and how you use them is entirely up to you.
-
----
-
-## Governance
-
-- **Agent rules**: [AGENTS.md](AGENTS.md) — mode toggle, CLI boundaries, git protocol, pre-commit checklist.
-- **Architecture**: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — system overview, directory structure, component descriptions, and integration points.
-- **Standards**: [docs/STANDARDS.md](docs/STANDARDS.md) — copyright headers, file naming, formatting.
-- **Pi setup**: [docs/pi.md](docs/pi.md) — pi configuration and usage notes.
-- **Skills**: All operational procedures live in [docs/skills/](docs/skills/). Each skill covers a distinct tool or concern.
-
----
+This repository uses its own conventions. [AGENTS.md](AGENTS.md) and
+[docs/](docs/) govern the development of the skill itself. They are not part of
+the behavior of the skill.
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE.md](LICENSE.md) for full terms.
+The MIT License governs this project. See [LICENSE.md](LICENSE.md) for the full
+terms.
 
 **Copyright (c) 2026 Deniz Eren <deniz.eren@outlook.com>**
 
-Third-party components (COMMITS.md, SKILLS.mdx, semver.md) are included under their original licenses. See [docs/THIRD-PARTY-NOTICES.md](docs/THIRD-PARTY-NOTICES.md) for attribution details.
+The specifications in `references/specs/` are part of this skill. They keep the
+licenses of their sources. See
+[docs/THIRD-PARTY-NOTICES.md](docs/THIRD-PARTY-NOTICES.md).

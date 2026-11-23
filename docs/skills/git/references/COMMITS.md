@@ -1,1 +1,1 @@
-../../../COMMITS.md
+../../../../references/specs/COMMITS.md

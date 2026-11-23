@@ -1,241 +1,60 @@
 ---
 name: state-management
-description: Procedures for updating project state documents: TASKS.md, HISTORY.md, DECISIONS.md, and THIRD-PARTY-NOTICES.md. Use when completing tasks, recording events, making architectural decisions, or adding third-party components.
-metadata:
-  author: llm-scaffolding
-  version: "1.0"
+description: >
+  Procedures to update the state documents of the project: TASKS.md,
+  DECISIONS.md, and THIRD-PARTY-NOTICES.md. Use this skill before each commit.
+  Use it also when you complete a task or make a decision. Use it also when you
+  add a third-party file or dependency.
 ---
 
 # State Management
 
-## Purpose
+All state documents are in `docs/`. Do not erase entries. Write dates in ISO
+format (`YYYY-MM-DD`).
 
-Define procedures for maintaining project state documents: TASKS.md, HISTORY.md, DECISIONS.md, and THIRD-PARTY-NOTICES.md.
+## TASKS.md
 
-## Structure
+- **Add a task** in its `<!-- [CAT] ... -->` group: `- [ ] <type>:
+  <description>`
+- **Complete a task:** `- [x] COMPLETE YYYY-MM-DD <type>: <description>`
 
-Covers update procedures for each state document, including formatting rules, trigger conditions, and examples.
+## CHANGELOG.md
 
-## Formatting Rules
+The [keepachangelog skill](../keepachangelog/SKILL.md) gives the procedure for
+`CHANGELOG.md`. Put each important change into its `## [Unreleased]` section.
 
-- Follow the exact formatting rules defined in each document.
-- Never delete existing entries.
-- Always use today's date in ISO format (YYYY-MM-DD).
+## DECISIONS.md
 
----
+Add an ADR when you make an important decision, when you change a decision, or
+when you cancel a decision. This includes decisions about tools, deviations from
+defaults, and missing tools.
 
-## TASKS.md Update Procedure
+1. Find the highest ADR number and add 1.
+2. Put the new ADR at the top of the file, below the `<!-- [CAT] Category -->`
+   comment of its category. The ADRs are newest first (git log order):
 
-TASKS.md tracks project tasks with completion status and dates.
-
-### When to Update
-
-- After completing any task listed in TASKS.md.
-- When creating new tasks during planning.
-- When re-prioritizing existing tasks.
-
-### How to Update
-
-1. **Mark completed tasks**: Change `[ ]` to `[x]` and append ` COMPLETE YYYY-MM-DD`
-   ```markdown
-   - [x] COMPLETE 2026-06-06 scaffold: create initial project structure
-   ```
-
-2. **Add new tasks**: Add under the appropriate category section
-   ```markdown
-   - [ ] COMPLETE scaffold: add new feature
-   ```
-
-3. **Group by category**: Use comments like `<!-- [CAT] Category Name -->` to group tasks.
-
-### Example
-
-**Before:**
-```markdown
-- [ ] COMPLETE scaffold: update documentation
-```
-
-**After:**
-```markdown
-- [x] COMPLETE 2026-06-06 scaffold: update documentation
-```
-
----
-
-## HISTORY.md Update Procedure
-
-HISTORY.md records significant events in the project's chronicle.
-
-### When to Update
-
-- After major decisions are made.
-- After significant changes to project structure.
-- When milestones are reached.
-- At the end of each bootstrap generation cycle.
-
-### How to Update
-
-1. **Add entry at top** (newest first):
-   ```markdown
-   ## YYYY-MM-DD — [Category] Title
-   ```
-
-2. **Write a concise description** (1–3 sentences):
-   ```markdown
-   Description of the event and its impact on the project.
-   ```
-
-3. **Use category tags**: `[Scaffold]`, `[Docs]`, `[Governance]`, `[Dev-Env]`, `[Release]`, etc.
-
-### Example
-
-```markdown
-## 2026-06-06 — [Scaffold] Initial Project Structure
-
-Created the initial project scaffold with governance documents, skills directory,
-and pre-existing document integration. The project is a documentation-based AI
-scaffolding bootstrap system.
-```
-
----
-
-## DECISIONS.md Update Procedure
-
-DECISIONS.md contains Architectural Decision Records (ADRs) for significant decisions.
-
-### When to Update
-
-- When making a new architectural or strategic decision.
-- When reversing or modifying an existing decision.
-- When the rationale for an existing decision changes.
-
-### How to Update
-
-1. **Determine the next ADR number** (check existing ADRs for the highest number).
-2. **Create a new ADR entry**:
    ```markdown
    ## ADR-N (YYYY-MM-DD): Title
+
+   ### Context
+   ### Decision
+   ### Alternatives
+   ### Consequences
    ```
 
-3. **Fill in the four required subsections**:
-   - `### Context` — Why was this decision being considered?
-   - `### Decision` — What was decided?
-   - `### Alternatives` — What other options were considered?
-   - `### Consequences` — What are the results of this decision?
+3. To cancel a decision, add a new ADR with the words "Supersedes ADR-M". Do not
+   edit that ADR.
 
-4. **Group under a category comment**: `<!-- [CAT] Category -->`
+## THIRD-PARTY-NOTICES.md
 
-### Example
+- For a **copied file or snippet**, add a Template A entry to Section 1.
+- For a **package dependency**, add a Template B entry to Section 2.
+- Include the source URL and the full license text.
 
-```markdown
-<!-- [CAT] Tooling -->
+## Before each commit
 
-## ADR-7 (2026-06-06): Linter Configuration
-
-### Context
-The project needs a static analysis tool to catch common issues.
-
-### Decision
-Use ruff for Python projects and eslint for JavaScript projects.
-
-### Alternatives
-- pylint for Python, clang-tidy for C++
-- No linter
-- flake8 for Python
-
-### Consequences
-- Tool configuration files must be generated in Step 3.
-- Build Agent script must run the linter as part of the check phase.
-```
-
----
-
-## THIRD-PARTY-NOTICES.md Update Procedure
-
-THIRD-PARTY-NOTICES.md tracks third-party open-source software, files, snippets, and libraries used in the project, with license attribution.
-
-### When to Update
-
-- When adding a new third-party dependency (via package manager or direct inclusion).
-- When copying a file or snippet from an external source into the project.
-- During initial scaffolding when pre-existing documents are integrated.
-
-### How to Update
-
-1. **Determine which template to use**:
-   - **Template A (Copied Files or Snippets)** — Use when directly copying a file or code snippet from an external repository.
-   - **Template B (Software Libraries / Dependencies)** — Use when importing an external library via a package manager or linking an external compiled library.
-
-2. **Create the entry** with these fields:
-
-   **Template A (copied files/snippets):**
-   ```markdown
-   ### [Original Project or Author Name]
-   * **Source:** [URL to original source]
-   * **Component(s) Used:** [Relative path in our project]
-   * **Original License:** [e.g., MIT, Apache 2.0]
-
-   #### License Notice
-   Copyright (c) [Year] [Original Copyright Holder]
-
-   [Paste the exact text of the license from the original source]
-   ```
-
-   **Template B (libraries/dependencies):**
-   ```markdown
-   ### [Library Name]
-   * **Source:** [URL to library documentation or repository]
-   * **Version:** [e.g., v1.4.2]
-   * **License:** [e.g., Apache 2.0, MIT]
-
-   #### License Notice
-   Copyright (c) [Year] [Original Copyright Holder]
-
-   [Paste the exact text of the library's license]
-   ```
-
-3. **Place the entry** under the appropriate section:
-   - **Section 1** — Copied Files and Snippets (Template A entries)
-   - **Section 2** — Software Libraries and Dependencies (Template B entries)
-
-4. **Verify** that the license text is complete and the source URL is accessible.
-
-### Example
-
-```markdown
-### conventionalcommits.org
-* **Source:** [github.com/conventional-commits/conventionalcommits.org/content/v1.0.0/index.md](https://github.com/conventional-commits/conventionalcommits.org/blob/master/content/v1.0.0/index.md)
-* **Component(s) Used:** [COMMITS.md](./docs/skills/git/references/COMMITS.md)
-* **Original License:** MIT License
-
-#### License Notice
-Copyright (c) 2018 Conventional Changelog
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to
-do so, subject to the following conditions:...
-```
-
----
-
-## Pre-Commit Integration
-
-The Pre-Commit Checklist in [AGENTS.md](../../../AGENTS.md) requires updating all four state documents and verifying copyright headers before every commit:
-
-1. **TASKS.md**: Mark completed tasks with `[x] COMPLETE YYYY-MM-DD`
-2. **HISTORY.md**: Add event entry for the commit
-3. **DECISIONS.md**: Add ADR if any new decisions were made
-4. **THIRD-PARTY-NOTICES.md**: Add attribution for new third-party components or dependencies
-5. **Copyright headers**: Verify on all new/modified source files
-
----
-
-## Reference
-
-- TASKS.md: [docs/TASKS.md](../TASKS.md)
-- HISTORY.md: [docs/HISTORY.md](../HISTORY.md)
-- DECISIONS.md: [docs/DECISIONS.md](../DECISIONS.md)
-- AGENTS.md Pre-Commit Checklist: [AGENTS.md](../../AGENTS.md)
+1. Update TASKS.md.
+2. Add a CHANGELOG.md entry in `## [Unreleased]` for an important change (see
+   the [keepachangelog skill](../keepachangelog/SKILL.md)).
+3. Add an ADR if you made a decision.
+4. Add a notice if you added a third-party component.
