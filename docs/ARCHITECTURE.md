@@ -1,24 +1,33 @@
+# Architecture
+
 ## Purpose
 
-Document the architecture of the AI Scaffolding Bootstrap project — what files exist, how they are structured, and what each component does.
+Write the architecture of the agent-scaffolding repository in this document.
+Write the files, their structure, and the task of each component.
 
 ## Structure
 
-Architecture is organized by: system overview, directory structure, component descriptions, and integration points.
+The document has a system overview, the directory structure, component
+descriptions, and the integration points.
 
 ## Formatting Rules
 
-- Use code blocks for path examples.
-- Keep descriptions concise and reference skill files for procedural details.
-- Do NOT record decisions here — use `docs/DECISIONS.md` for that.
+- Use code blocks for directory trees.
+- Keep the descriptions short, and link to skill files for procedures.
+- Do not record decisions here. Use [DECISIONS.md](DECISIONS.md).
 
 ---
 
 ## System Overview
 
-This is a documentation-only project. The primary artifact is `prompts/bootstrap-prompt.md` — a single prompt file that configures an AI agent to scaffold complete project structures.
+The repository root is an [Agent Skill](https://agentskills.io) with the name
+`agent-scaffolding`. To install it, clone the repository as `agent-scaffolding/`
+into a skills directory. An agent reads `SKILL.md` first. Then it loads the
+reference files, the templates, and the scripts that are necessary (it reads
+more files only when they are necessary).
 
-There is no build system, no source code, and no dev environment. The prompts in `prompts/` are standalone templates — the user decides whether and how to use them.
+The repository also contains its own governance (`AGENTS.md` and `docs/`). It
+applies the skill to itself, as recorded in `.agent-scaffolding.yml`.
 
 ---
 
@@ -26,98 +35,84 @@ There is no build system, no source code, and no dev environment. The prompts in
 
 ```
 /
-├── AGENTS.md          ← AI agent governance (mode toggle, git protocol, checklist)
-├── README.md          ← Entry point: overview, quick-start, how-to-use
-├── LICENSE.md         ← Project license (MIT, immutable)
-├── .gitignore         ← Build, IDE, and environment exclusions
-├── prompts/
-│   ├── bootstrap-prompt.md ← Scaffolding bootstrap prompt (the deliverable)
-│   ├── retro-prompt.md     ← Retrospective analysis template
-│   └── rubric-prompt.md    ← Assessment rubric template
-├── docs/
-│   ├── TASKS.md            ← Task tracking with completion dates
-│   ├── HISTORY.md          ← Project chronicle
-│   ├── VISION.md           ← Mission and guiding principles
-│   ├── DECISIONS.md        ← Architectural Decision Records (ADRs)
-│   ├── STANDARDS.md        ← Copyright and file creation standards
-│   ├── THIRD-PARTY-NOTICES.md ← Third-party dependency attribution
-│   ├── SKILLS.mdx          ← Original skills spec (immutable source)
-│   ├── COMMITS.md          ← Original commits spec (immutable source)
-│   ├── semver.md           ← Original semver spec (immutable source)
-│   └── skills/             ← Agent skill implementations
-│       ├── create-skill/   ← Meta-skill: how to create new skills
-│       │   └── references/ ← SKILLS.mdx copy (immutable)
-│       ├── dev-environment/← Dev environment setup docs
-│       ├── git/            ← Git conventions
-│       │   └── references/ ← COMMITS.md, semver.md copies
-│       └── state-management/ ← TASKS/HISTORY/DECISIONS update procedures
+├── SKILL.md               ← Skill entry point: frontmatter, workflow, index
+├── README.md              ← For people: install, operation, overview
+├── CHANGELOG.md           ← Skill versions (for upgrades in apply mode)
+├── LICENSE.md             ← MIT (IMMUTABLE)
+├── AGENTS.md              ← Governance for contributors to this repository
+├── .agent-scaffolding.yml ← Configuration of this repository for the skill
+├── .agents/skills         ← Standard symlink to docs/skills
+├── references/            ← Loaded on demand by the agent
+│   ├── INTERVIEW.md       ← Auto values, questions, defaults, placeholders
+│   ├── BOOTSTRAP.md       ← New-project workflow (5 phases)
+│   ├── APPLY.md           ← Existing-project workflow (audit, approval, apply)
+│   ├── RULES.md           ← Hard rules that always apply
+│   ├── VERIFICATION.md    ← verify.sh results and manual checklist
+│   ├── SPEC-NOTICES.md    ← Attribution entries for specs (copied into targets)
+│   ├── modules/           ← One file for each optional module
+│   └── specs/             ← IMMUTABLE specs: COMMITS.md, semver.md, SKILLS.mdx
+├── assets/repo/           ← Files copied into target projects
+│   ├── AGENTS.md, README.md, gitignore, agent-scaffolding.yml
+│   ├── docs/              ← The 7 state documents
+│   ├── skills/            ← create-skill, git, state-management,
+│   │                         dev-environment, keepachangelog
+│   ├── agents/            ← build.md, format-validator.md
+│   └── scripts/           ← build-agent.sh, formatter-agent.sh, enter-dev.sh
+├── scripts/
+│   ├── audit.sh           ← Read-only gap report for a target directory
+│   └── verify.sh          ← Check of a target directory against the rules
+└── docs/                  ← State documents of the repository
+    ├── TASKS.md, VISION.md, DECISIONS.md
+    ├── CONVENTIONS.md, ARCHITECTURE.md, THIRD-PARTY-NOTICES.md
+    └── skills/            ← Project skills, made from the templates
+        ├── create-skill/  ← references/SKILLS.mdx → references/specs/
+        ├── git/           ← COMMITS.md, semver.md → references/specs/
+        ├── keepachangelog/← Keep a Changelog procedure for CHANGELOG.md
+        └── state-management/
 ```
 
 ---
 
 ## Component Descriptions
 
-### Root Files
+### Skill content
 
-| File | Purpose |
-|---|---|
-| `AGENTS.md` | Supreme authority for AI agent behavior: mode toggle, CLI boundaries, git protocol, pre-commit checklist. |
-| `README.md` | Entry point: project overview, how to use the bootstrap prompt, development environment notes, repository structure. |
-| `LICENSE.md` | MIT License (immutable). |
-| `.gitignore` | Excludes build outputs, IDE files, language artifacts, and dev environment directories. |
+- **`SKILL.md`:** Selects the mode (bootstrap or apply). Runs the interview.
+  Reads the rules and the selected modules. Runs the workflow. Verifies the
+  result.
+- **`references/RULES.md`:** Configuration, home paths, the DRY matrix,
+  AGENTS.md sections, the git protocol, root files, document headers, links,
+  names, document tasks, skills, pre-existing documents, build integrity,
+  templates, and safety.
+- **`references/modules/*.md`:** `dev-environment`, `build-agents`,
+  `tool-configs`, `boilerplate`, and `copyright`.
+- **`assets/repo/`:** Complete files with `{{PLACEHOLDERS}}` and module blocks.
+  The agent puts the values into them and changes them.
+- **`scripts/audit.sh`:** Reports OK, MISSING, CHECK, and INFO for each core
+  item and module item. It does not write.
+- **`scripts/verify.sh`:** Reports PASS, WARN, and FAIL. After a FAIL, the exit
+  code is not 0. It obeys `exclude_paths` in the config of the target.
 
-### Prompt Files (`prompts/`)
+### Repository governance
 
-| File | Purpose |
-|---|---|
-| `bootstrap-prompt.md` | The main deliverable: a single prompt that configures an AI agent to scaffold a complete project structure with governance, skills, and boilerplate. |
-| `retro-prompt.md` | Template for retrospective analysis: critiques the bootstrap prompt after use. |
-| `rubric-prompt.md` | Assessment rubric: evaluates generated scaffoldings against criteria. |
-
-### Documentation Files (`docs/`)
-
-| File | Purpose |
-|---|---|
-| `TASKS.md` | Tracks project tasks with `[x] COMPLETE YYYY-MM-DD` format. |
-| `HISTORY.md` | Chronological record of significant events (reverse chronological). |
-| `VISION.md` | Mission statement and guiding principles for the project. |
-| `DECISIONS.md` | Architectural Decision Records (ADRs): context, decision, alternatives, consequences. |
-| `STANDARDS.md` | Copyright headers, file naming, document formatting rules. |
-| `THIRD-PARTY-NOTICES.md` | Attribution for third-party dependencies and copied files. |
-| `SKILLS.mdx` | Original skills specification (immutable source). |
-| `COMMITS.md` | Conventional Commits specification (immutable source). |
-| `semver.md` | Semantic Versioning 2.0.0 specification (immutable source). |
-
-### Skills Directory (`docs/skills/`)
-
-| Skill | Purpose |
-|---|---|
-| `create-skill/` | Meta-skill: step-by-step instructions for creating new agent skills. |
-| `dev-environment/` | Documents development environment setup (for this project: no env needed; for software projects: template for venv or container). |
-| `git/` | Git conventions: commit format, Assisted-by footer, branch strategy, Conventional Commits reference. |
-| `state-management/` | Procedures for updating TASKS.md, HISTORY.md, DECISIONS.md, and THIRD-PARTY-NOTICES.md. |
-
-### Reference Files (`docs/skills/*/references/`)
-
-Copies of immutable source documents, with relative links adjusted for their new locations:
-
-| Skill | Reference File | Purpose |
-|---|---|---|
-| `create-skill/` | `SKILLS.mdx` | Skills specification blueprint for skill creation. |
-| `git/` | `COMMITS.md` | Conventional Commits format reference. |
-| `git/` | `semver.md` | Semantic Versioning reference. |
+- **`AGENTS.md`:** Made from the template, plus the repository scope, the
+  IMMUTABLE files, and the validation steps.
+- **`docs/*.md`:** State documents (tasks, decisions, and other records).
+- **`docs/skills/*`:** Made from `assets/repo/skills/`. The spec references are
+  symlinks to `references/specs/`.
 
 ---
 
 ## Integration Points
 
-| Component | References | Referenced By |
-|---|---|---|
-| `prompts/bootstrap-prompt.md` | All skills, AGENTS.md | README.md |
-| `prompts/retro-prompt.md` | bootstrap-prompt.md | README.md |
-| `prompts/rubric-prompt.md` | bootstrap-prompt.md | README.md |
-| `docs/skills/create-skill/references/SKILLS.mdx` | SKILL.md in create-skill/ | STANDARDS.md |
-| `docs/skills/git/references/COMMITS.md` | SKILL.md in git/ | STANDARDS.md |
-| `docs/skills/git/references/semver.md` | SKILL.md in git/ | STANDARDS.md |
-| `docs/THIRD-PARTY-NOTICES.md` | (standalone — no cross-references) | (standalone — referenced by Pre-Commit Checklist in AGENTS.md) |
-| `docs/DECISIONS.md` | (standalone — contains ADRs) | (referenced by Pre-Commit Checklist in AGENTS.md and state-management SKILL.md) |
+- **Agent platforms → `SKILL.md`:** The platforms find the skill in the skills
+  directory of the user (the standard is `~/.agents/skills/`).
+- **`SKILL.md` → `references/`, `assets/`, `scripts/`:** Relative links. The
+  agent reads them from the skill directory (`$SKILL`).
+- **`references/BOOTSTRAP.md` → `references/specs/`,
+  `docs/THIRD-PARTY-NOTICES.md`:** The skill copies the specs and their
+  attribution into the target.
+- **`scripts/verify.sh` → Target `.agent-scaffolding.yml`:** Reads `modules` and
+  `exclude_paths`.
+- **`.agents/skills` → `docs/skills/`:** Standard symlink for agents that change
+  this repository.

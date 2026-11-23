@@ -1,170 +1,154 @@
 # AI Agent Governance
 
-## Purpose
-
-Establish the rules, boundaries, and operational protocols for AI agents operating in this project.
-
-## Structure
-
-Governance content is organized into: agent identity, mode toggle, workflow, failure modes, CLI boundaries, token management, git protocol, and pre-commit checklist.
-
-## Formatting Rules
-
-- Use tables for structured comparisons (failure modes, CLI boundaries).
-- Use checkboxes for actionable items (pre-commit checklist).
-- Keep each section concise and reference skill files for detailed procedures.
+This file has the highest authority for AI agents that work in
+**agent-scaffolding**. The skill files in [docs/skills/](docs/skills/) have the
+procedures with more information. This file links to them, and it does not give
+the same information again.
 
 ---
 
-## Agent Identity
+## Commit Mode
 
-The agent and model used for AI-assisted commits are configured here so the `Assisted-by:` footer always references the correct values.
-
-| Setting | Value |
-|---|---|
-| **Agent Name** | `pi-agent` |
-| **Model** | `Qwen3.6-35B-A3B-UD-Q4_K_XL` |
-
-The `Assisted-by:` footer in every commit uses the format: `pi-agent:Qwen3.6-35B-A3B-UD-Q4_K_XL`.
-
----
-
-## Mode Toggle
-
-| Mode | Behavior | Use Case |
-|---|---|---|
-| **AUTONOMOUS** | Agent proceeds without pausing. Commits are made automatically with `--no-gpg-sign`. | Routine maintenance, scaffolding generation, documentation updates. |
-| **HITL** | Agent pauses for human confirmation before committing. Waits for `GPG SIGNATURE` before signing. | High-impact changes, security-sensitive operations, releases. |
-
-**Default:** AUTONOMOUS
+`operations.commit_mode` in [.agent-scaffolding.yml](.agent-scaffolding.yml) is
+the single source of truth for the commit mode and for the signature behavior of
+the commits. Read the mode from there. The [git skill](docs/skills/git/SKILL.md)
+defines the behavior of the modes and their typical work. This file does not
+define the modes.
 
 ---
 
 ## Predict → Act → Verify
 
-All agent actions follow this three-phase workflow:
+1. **Predict:** examine the task, plan the steps, and find the possible failures
+   before you act.
+2. **Act:** do the planned steps. Make an atomic commit after each phase.
+3. **Verify:** run the checks (build, tests, format, lint), and confirm that
+   they are correct.
 
-1. **Predict**: Analyze the request, identify required steps, and check for potential failures before acting.
-2. **Act**: Execute the planned steps, making atomic commits after each logical phase.
-3. **Verify**: Run self-verification checks (build, test, format, lint) and confirm success before proceeding.
-
-If verification fails in Phase 3, **Act** again with the fix, then **Verify** once more. Do not proceed to the next phase until the current phase passes.
+If verification is not correct, go back to Act, repair the problem, and verify
+again. Do not start the next phase until the current phase is correct.
 
 ---
 
 ## Failure Modes
 
-| Failure | Response | Escalation |
-|---|---|---|
-| Build fails | Diagnose root cause, fix scaffolding (not boilerplate), re-run build | If unable to fix after 3 attempts, switch to HITL mode |
-| Test fails | Investigate test failures, fix source of failure, re-run | If unable to fix after 3 attempts, switch to HITL mode |
-| Formatter rejects config | Strip invalid options one at a time, re-test, document in DECISIONS.md | If config cannot be validated, create zero-option config and note uncertainty |
-| Tool not installed | Create SKILL.md documenting the tool and noting it must be installed. Record absence in DECISIONS.md | None — documented for future use |
-| Git conflict | Abort, update from remote, resolve conflicts, re-attempt | Switch to HITL mode for conflict resolution |
-| Token limit approaching | Prioritize critical content, compress documentation, avoid redundant info | None — adjust output length |
-| Context overflow | Summarize earlier context, reference files instead of embedding content | None — rely on skill file references |
+- **The build is not correct:** Find the root cause. Repair the scaffolding (not
+  the boilerplate). Run the build again. After three attempts with no success,
+  stop, and get the approval of the human.
+- **A test is not correct:** Find the source of the failure, and repair it. Then
+  run the tests again. After three attempts with no success, stop, and get the
+  approval of the human.
+- **The formatter or the linter does not accept its config:** Remove one
+  parameter at a time. Do a test again. Record an ADR. If the config is not
+  correct after that, use a config with no parameters, and record the
+  uncertainty.
+- **A tool is not installed:** Write in the skill of the tool that the tool must
+  be installed. Record an ADR.
+- **A git conflict:** Stop the operation. Get the changes from the remote.
+  Resolve the conflict. Attempt it again. If it continues, put the decision to
+  the human.
+- **The context or token limit is close:** Give a summary of the earlier
+  context. Link to files. Do not copy their content.
 
 ---
 
-## CLI Execution Boundaries
+## Boundaries for CLI Commands
 
-| Action | Allowed | Requires HITL |
+| Command | Permitted | Approval necessary |
 |---|---|---|
-| Read files | ✓ | — |
-| Run version checks (`--version`) | ✓ | — |
-| Execute build/test scripts | ✓ | — |
-| Execute formatter scripts | ✓ | — |
-| Make git commits (Autonomous mode) | ✓ | — |
-| Make git commits (HITL mode) | ✗ | `WAITING FOR GPG SIGNATURE` |
-| Modify IMMUTABLE documents | ✗ | ✗ (never) |
-| Delete project files | ✗ | ✗ (never) |
-| Install system packages | ✓ | — |
-| Modify .gitignore | ✓ | — |
-| Push to remote | ✗ | ✓ |
+| Read files. Run `--version` checks. | ✓ | — |
+| Run build, test, and formatter scripts | ✓ | — |
+| Commit | the commit mode in `.agent-scaffolding.yml` gives the rules | — |
+| Install system packages | ✗ | ✓ |
+| Erase project files | ✗ | ✓ |
+| Change IMMUTABLE documents | ✗ | ✗ (not permitted) |
+| Push to a remote | ✗ | ✓ |
 
 ---
 
-## Token & Context Management
+## Token and Context Management
 
-- **Load skills progressively**: Load SKILL.md only when relevant; don't preload all skills.
-- **Reference, don't embed**: Point to skill files and documentation instead of repeating instructions.
-- **Keep SKILL.md under 500 lines**: Split detailed reference material into separate files under `references/`.
-- **Summarize, don't repeat**: When referencing earlier context, use concise summaries.
-- **Batch reads**: Read multiple files in a single call when they're related.
-- **Use find efficiently**: When scanning for files, use `find` with `-print0` and appropriate name groups.
+- Load a skill only when it is necessary for the task.
+- Link to skill files and documents. Do not copy their content.
+- Give a summary of the earlier context. Do not give it again.
+- Read connected files in one batch.
+- Write `~` or `$HOME`. Do not write an absolute home path.
 
 ---
 
 ## Git Protocol
 
-### Identity
-
-All commits use the configured identity inline — never modify local git config:
+Read the identity from `.agent-scaffolding.yml` (`identity.git_author_name`,
+`identity.git_author_email`). The value `current_user` means the identity of the
+current user. Take the name and the email from the git configuration of the
+environment (`git config user.name`, `git config user.email`). Give the identity
+inline for each commit. Do not change git config:
 
 ```bash
-git -c user.name="Deniz Eren" -c user.email="deniz.eren@outlook.com" commit -m "message" --no-gpg-sign
+git -c user.name="<name>" -c user.email="<email>" commit -F <message-file>
 ```
 
-### Commit Message Format
-
-Every commit ends with a blank line followed by an `Assisted-by:` footer:
-
-```
-{commit message body}
-
-Assisted-by: {AgentName}:{ModelVersion}
-```
-
-If additional tools were used, append with ` + `:
+Each commit message obeys Conventional Commits. It has an empty line and an
+`Assisted-by:` footer at the end. The footer gives the names of the agent and
+the model **of the current session**. Do not copy them from earlier commits:
 
 ```
-Assisted-by: {AgentName}:{ModelVersion} + {Tool1} + {Tool2}
+<type>[scope]: <description>
+
+Assisted-by: <AgentName>:<Model> [+ <Tool> ...]
 ```
 
-### Commit Mode Rules
-
-| Mode | Signing Flag | Behavior |
-|---|---|---|
-| AUTONOMOUS | `--no-gpg-sign` | Proceed without pausing |
-| HITL | (default signing) | Pause for human confirmation; WAITING FOR GPG SIGNATURE |
-
-### Conventional Commits
-
-Use types from [docs/skills/git/references/COMMITS.md](docs/skills/git/references/COMMITS.md). Reference: [docs/skills/git/SKILL.md](docs/skills/git/SKILL.md).
-
-### Branch Strategy
-
-- `main` is the protected production branch.
-- Create feature branches from `main` for changes.
-- Squash and merge feature branches into `main`.
+For the full procedure, see the [git skill](docs/skills/git/SKILL.md).
 
 ---
 
 ## Pre-Commit Checklist
 
-Before every commit, verify:
+Before each commit, verify:
 
-- [ ] Commit message follows Conventional Commits format
-- [ ] `Assisted-by:` footer is present
-- [ ] Build and tests pass (if applicable)
-- [ ] Formatter finds no violations (if applicable)
-- [ ] `TASKS.md` updated with `[x] COMPLETE YYYY-MM-DD` for completed tasks
-- [ ] `HISTORY.md` updated with event entry
-- [ ] `DECISIONS.md` updated with ADR if new decisions made
-- [ ] `THIRD-PARTY-NOTICES.md` updated with attribution for new third-party components or dependencies
-- [ ] Copyright headers verified on all new/modified source files
-- [ ] No IMMUTABLE documents modified
+- [ ] The commit message obeys Conventional Commits, and it has the
+  `Assisted-by:` footer
+- [ ] `shellcheck scripts/*.sh assets/repo/scripts/*.sh` reports no findings
+- [ ] `agentskills validate` is correct for the skill (run it on a path with
+  `agent-scaffolding` as the last component)
+- [ ] `scripts/verify.sh .` reports no FAIL
+- [ ] You updated `CHANGELOG.md` and `metadata.version` for changes to the
+  behavior of the skill
+- [ ] You updated `docs/TASKS.md` (`[x] COMPLETE YYYY-MM-DD`)
+- [ ] `CHANGELOG.md` has an entry in `## [Unreleased]` for the change
+- [ ] `docs/DECISIONS.md` has an ADR for each new decision
+- [ ] `docs/THIRD-PARTY-NOTICES.md` has attribution for each new third-party
+  component
+- [ ] You did not change an IMMUTABLE document
 
-> **Detailed update procedures**: See [docs/skills/state-management/SKILL.md](docs/skills/state-management/SKILL.md) for full instructions on updating state documents.
+For the update procedures, see the [state-management
+skill](docs/skills/state-management/SKILL.md).
 
 ---
 
-## HITL Text
+## Rules for This Project
 
-When HITL mode is active and waiting for human confirmation:
+This repository **is** the `agent-scaffolding` Agent Skill. The content of the
+skill is [SKILL.md](SKILL.md), [references/](references/), [assets/](assets/),
+and [scripts/](scripts/). This file and [docs/](docs/) govern the development of
+the skill. The repository applies its own skill to itself (see
+[.agent-scaffolding.yml](.agent-scaffolding.yml)).
 
-```
-WAITING FOR GPG SIGNATURE
-```
-
-Do not proceed until the human confirms or provides the GPG signature.
+- **IMMUTABLE:** [LICENSE.md](LICENSE.md) and the specifications in
+  [references/specs/](references/specs/) with no changes. The copies in
+  `docs/skills/*/references/` are symlinks to them.
+- **Templates:** the files in [assets/repo/](assets/repo/) contain
+  `{{PLACEHOLDERS}}` and module markers on purpose. When you change a template,
+  also update the placeholder table in
+  [references/INTERVIEW.md](references/INTERVIEW.md) and the checks in
+  [scripts/verify.sh](scripts/verify.sh).
+- **Spec notices:** when a spec in `references/specs/` changes, update its entry
+  in [references/SPEC-NOTICES.md](references/SPEC-NOTICES.md) (copied into
+  target projects) and in
+  [docs/THIRD-PARTY-NOTICES.md](docs/THIRD-PARTY-NOTICES.md).
+- **Releases:** for each change to the behavior of the skill, add an entry to
+  [CHANGELOG.md](CHANGELOG.md), and increase `metadata.version` in `SKILL.md` as
+  [SemVer](references/specs/semver.md) says.
+- **Writing style:** use any currently installed Simplified Technical English
+  skills for project documents; skip if none are installed. Only original
+  project glossaries (`technical_terms.txt`, `allowed_phrases.txt`) stay here.

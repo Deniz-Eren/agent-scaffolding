@@ -1,0 +1,66 @@
+# allowed_phrases.txt — multi-word technical phrases for this project, used
+# with Simplified Technical English checks (skip if no Simplified Technical
+# English skill is installed).
+#
+# This file contains original project phrases only.
+#
+# Format: one phrase on each line. Everything after '#' is a comment.
+
+# --- project terms ----------------------------------------------------------
+operating system
+source code
+agent skill
+agent platform
+tool config
+commit message
+commit identity
+git protocol
+development environment
+dev environment
+module marker
+copyright header
+state document
+root cause
+third-party
+breaking change
+version control
+pre-commit
+best practices
+existing project
+existing documents
+gap report
+read-only
+working tree
+working directory
+current working directory
+source file
+pull request
+pre-existing documents
+Semantic Versioning
+code span
+guiding principles
+state tracking
+package manager
+smoke test
+base image
+build target
+package managers
+existing projects
+existing license
+existing skill
+existing skills
+breaking changes
+existing repository
+existing repositories
+state documents
+state document
+state-management
+create-skill
+conventionalcommits.org
+agentskills
+llm-scaffolding
+agent-scaffolding
+state management
+Conventional Commits
+Predict → Act → Verify
+

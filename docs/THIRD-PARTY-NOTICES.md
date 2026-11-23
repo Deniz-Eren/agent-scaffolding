@@ -1,63 +1,63 @@
 # Third-Party Notices
 
-This document outlines the third-party open-source software, files, snippets, and libraries utilized within this project. We are grateful to the open-source community for their contributions.
+This document gives the third-party open-source software, files, snippets, and libraries that this project uses. We give thanks to the open-source community for its contributions.
 
-The notices, terms, and copyright lines included below are provided to comply with the attribution requirements of their respective open-source licenses. **Please note:** The inclusion of these licenses applies strictly to the specific third-party files or dependencies listed, and does not alter, govern, or supersede the primary license of this project (which can be found in the root `LICENSE` file).
+The notices, the terms, and the copyright lines below give the attribution for their open-source licenses. **Note:** these licenses apply only to the third-party files and dependencies in the list. They do not change the primary license of this project. The primary license is in the `LICENSE` file in the root.
 
 ---
 
 ## Purpose
 
-Record third-party open-source software, files, snippets, and libraries used in this project, with license attribution and compliance notices.
+Record the third-party open-source software, files, snippets, and libraries that this project uses. Give the license attribution and the compliance notices.
 
 ## Structure
 
-Organized into a format guide (templates for adding entries), copied files and snippets, and software libraries/dependencies.
+The document has a section with templates for new entries, the copied files and snippets, and the software libraries and dependencies.
 
 ## Formatting Rules
 
-- Use Template A for copied files or snippets from external repositories.
-- Use Template B for software libraries/dependencies imported via package managers.
-- Never delete existing entries — only append new ones.
-- Keep source URLs accessible and license text complete.
+- Use Template A for copied files or snippets from other repositories.
+- Use Template B for software libraries and dependencies that a package manager imports.
+- Do not erase entries. Append new entries.
+- Keep the source URLs correct, and keep the license text complete.
 
 ---
 
-## Documentation Format Guide
+## Templates for the Entries
 
-To maintain a clean and consistent record of our third-party usage, we use the standardized templates below. When adding a new dependency or copied file to this project, please copy the appropriate template, fill out the bracketed information `[LIKE THIS]`, and add it to the corresponding section.
+We use the templates below for the entries. When you add a new dependency or a copied file to this project, copy the template that applies. Write the information between the brackets `[LIKE THIS]`. Put the entry in the correct section.
 
 ### Template A: Copied Files or Snippets
 
-Use this format when directly copying a single file (e.g., a `.md` file, a specific script, or a snippet of code) from an external repository into our codebase.
+Use this format when you copy one file (for example a `.md` file, a script, or a code snippet) from a different repository into this project.
 
 ```markdown
 ### [Original Project or Author Name]
 * **Source:** https://www.reddit.com/r/github/comments/e1s9qq/difference_between_gist_and_repository/
-* **Component(s) Used:** [Relative path in our project, e.g., `src/docs/copied-file.md`]
-* **Original License:** [e.g., MIT, BSD-3-Clause]
+* **Component(s) Used:** [the relative path in this project, for example `src/docs/copied-file.md`]
+* **Source License:** [for example MIT, BSD-3-Clause]
 
 #### License Notice
 Copyright (c) [Year] [Original Copyright Holder]
 
-[Paste the exact text of the license provided in the original file/project here]
+[Put the exact text of the license from the original file or project here]
 
 ```
 
 ### Template B: Software Libraries / Dependencies
 
-Use this format when importing an external library via a package manager (npm, pip, cargo, etc.) or linking an external compiled library.
+Use this format when you import a library with a package manager (npm, pip, cargo, and other package managers), or when you connect a compiled library.
 
 ```markdown
 ### [Library Name]
 * **Source:** https://docs.gitlab.com/user/packages/package_registry/
-* **Version:** [e.g., v1.4.2]
-* **License:** [e.g., Apache 2.0, MIT]
+* **Version:** [for example v1.4.2]
+* **License:** [for example Apache 2.0, MIT]
 
 #### License Notice
 Copyright (c) [Year] [Original Copyright Holder]
 
-[Paste the exact text of the library's license here]
+[Put the exact text of the license of the library here]
 
 ```
 
@@ -65,15 +65,16 @@ Copyright (c) [Year] [Original Copyright Holder]
 
 ## 1. Copied Files and Snippets
 
-*(Add your copied file entries here using Template A)*
+*(Put your copied file entries here. Use Template A.)*
 
 ### conventionalcommits.org
-* **Source:** [github.com/conventional-commits/conventionalcommits.org/content/v1.0.0/index.md](https://github.com/conventional-commits/conventionalcommits.org/blob/master/content/v1.0.0/index.md)
-* **Component(s) Used:** [COMMITS.md](./COMMITS.md)
-* **Original License:** MIT License
+* **Source:** [conventionalcommits.org (v1.0.0)](https://github.com/conventional-commits/conventionalcommits.org/blob/master/content/v1.0.0/index.md)
+* **Component(s) Used:** [references/specs/COMMITS.md](../references/specs/COMMITS.md), [docs/skills/git/references/COMMITS.md](skills/git/references/COMMITS.md)
+* **Source License:** MIT License
 
 #### License Notice
 
+```text
 MIT License
 
 Copyright (c) 2018 Conventional Changelog
@@ -95,14 +96,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
 
 ### agentskills
-* **Source:** [github.com/agentskills/agentskills/blob/main/docs/specification.mdx](https://github.com/agentskills/agentskills/blob/main/docs/specification.mdx)
-* **Component(s) Used:** [SKILLS.mdx](./SKILLS.mdx)
-* **Original License:** Apache License
+* **Source:** [github.com/agentskills/agentskills](https://github.com/agentskills/agentskills/blob/main/docs/specification.mdx)
+* **Component(s) Used:** [references/specs/SKILLS.mdx](../references/specs/SKILLS.mdx), [docs/skills/create-skill/references/SKILLS.mdx](skills/create-skill/references/SKILLS.mdx)
+* **Source License:** Apache License
 
 #### License Notice
 
+```text
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -304,14 +307,16 @@ SOFTWARE.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+```
 
 ### Semantic Versioning 2.0.0
 * **Source:** [github.com/semver/semver.md](https://github.com/semver/semver/blob/master/semver.md)
-* **Component(s) Used:** [semver.md](./semver.md)
-* **Original License:** Creative Commons Legal Code
+* **Component(s) Used:** [references/specs/semver.md](../references/specs/semver.md), [docs/skills/git/references/semver.md](skills/git/references/semver.md)
+* **Source License:** `Creative Commons Attribution 3.0 Unported (CC BY 3.0)`
 
 #### License Notice
 
+```text
 Creative Commons Legal Code
 
 Attribution 3.0 Unported
@@ -631,10 +636,16 @@ Creative Commons Notice
     this trademark restriction does not form part of this License.
 
     Creative Commons may be contacted at https://creativecommons.org/.
+```
+
+### keepachangelog.com
+* **Component(s) Used:** [docs/skills/keepachangelog/SKILL.md](../docs/skills/keepachangelog/SKILL.md)
+* **Source:** [keepachangelog.com](https://keepachangelog.com)
+* **Note:** The keepachangelog skill gives the Keep a Changelog format with its own words. No text is copied from the source.
 
 ---
 
 ## 2. Software Libraries and Dependencies
 
-*(Add your external library entries here using Template B)*
+*(Put your external library entries here. Use Template B.)*
 

@@ -1,1 +1,1 @@
-../../../semver.md
+../../../../references/specs/semver.md

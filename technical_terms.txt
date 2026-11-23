@@ -1,0 +1,232 @@
+# technical_terms.txt — project technical nouns (TN) and technical verbs (TV)
+# for Simplified Technical English checks (skip if no Simplified Technical
+# English skill is installed).
+#
+# This file contains original project terms only.
+#
+# Format: one term on each line. Everything after '#' is a comment.
+
+# --- project terms ----------------------------------------------------------
+file                 # TN — a named unit of data storage
+directory            # TN — a container for files in a file system
+path                 # TN — the location of a file or directory
+project              # TN — a body of work with its files and history
+skill                # TN — a packaged set of instructions for an agent
+agent                # TN — a program that does tasks for a user
+update               # TV — to put the latest data or version into something
+run                  # TV — to start and operate a program or script
+validate             # TV — to make sure that data obeys the rules
+clone                # TV — to copy a git repository
+upgrade              # TV — to change to a newer version
+overwrite            # TV — to write data over stored data
+rename               # TV — to give a new name to a file
+confirm              # TV — to say that something is sure or correct
+govern               # TV — to control and direct the work of
+scaffold             # TV — to generate the base structure of a project
+scaffolding          # TN — the base structure of a project
+template             # TN — a file with placeholders for generated files
+placeholder          # TN — a mark in a template that a value replaces
+symlink              # TN — a symbolic link
+repository           # TN — a storage area for a project in git
+commit               # TV / TN — to record changes in git; the record
+linter               # TN — a tool that checks code for errors
+formatter            # TN — a tool that corrects the format of files
+workflow             # TN — a defined sequence of work steps
+bootstrap            # TV / TN — to start a project from its base structure; the mode that does this
+audit                # TV / TN — to examine a project against rules
+interview            # TN — a structured set of questions and answers
+module               # TN — an optional part of the skill
+marker               # TN — a text pattern that shows a position
+changelog            # TN — a file that records changes per version
+header               # TN — a comment block with copyright information
+footer               # TN — text at the end of a commit message
+scope                # TN — the part of the project that a change affects
+release              # TN / TV — a published version of the skill
+flag                 # TN — a mark that the checker reports
+string               # TN — a sequence of characters
+script               # TN — a file with commands for a shell
+shell                # TN — a program that runs commands
+config               # TN — a configuration file or settings
+validator            # TN — a tool that checks data against rules
+subagent             # TN — a child agent that a parent agent starts
+platform             # TN — an agent product such as Claude Code
+phase                # TN — one group of steps in a procedure
+checklist            # TN — a list of items to verify
+prompt               # TN — a text that gives instructions to an agent
+warning              # TN — a message that shows a possible risk
+branch               # TN — a line of development in git
+tag                  # TN — a mark on a git commit for a release
+rule                 # TN — one condition from a set of conditions
+section              # TN — one part of a document
+table                # TN — rows and columns of data in a document
+page                 # TN — one document on a web site
+site                 # TN — a set of pages on the World Wide Web
+plan                 # TN — a set of decisions for future work
+setup                # TN — the arrangement of equipment or software
+note                 # TN — a short piece of information in a document
+link                 # TN — a connection from one document to another
+copy                 # TN — a duplicate
+document             # TN — a file with information for people
+documentation        # TN — documents that give information about a system
+governance           # TN — the rules that control the work
+behavior             # TN — the way that a system operates
+consent              # TN — permission that a person gives
+environment          # TN — the software and tools that a program needs
+version              # TN — one state of software among others in time
+skeleton             # TN — the minimum code structure of a program
+manifest             # TN — a file that lists the parts of a project
+convention           # TN — a standard way to do work in a group
+term                 # TN — a word with a special meaning in a field
+license              # TN — the legal conditions for the use of work
+question             # TN — a sentence that asks for information
+answer               # TN — the information that you give to a question
+default              # TN — a value that applies when you give no value
+library              # TN — code that programs can use
+executable           # TN — a file that a computer can run
+failure              # TN — a condition of not working correctly
+protocol             # TN — a set of rules for communication
+build                # TN / TV — the procedure that makes the software ready to run; to do this procedure
+boilerplate          # TN — standard text or code used again in many files
+copyright            # TN — the legal right to copy and publish work
+identity             # TN — the name and email that a git commit records
+failure-mode         # TN — a defined response to a failure
+dependency          # TN — a component that a component needs
+practice             # TN — a standard way to do work
+signature            # TN — a cryptographic mark that shows who made a change
+format               # TN — the arrangement of text or data
+execute              # TV — to run a procedure or a program
+push                 # TV — to send commits to a remote git repository
+preflight            # TN — a check that you do before the main work
+verify               # TV — to make sure that something agrees with the rules
+act                  # TV — to do the planned work (name of a phase)
+import               # TV / TN — to bring documents or data into a project
+attribution          # TN — a statement that gives credit to a source
+spec                 # TN — short name for a specification document
+reference            # TN — a document that you consult for information
+block                # TN — a group of lines in a file
+human                # TN — a person
+development          # TN — the work that makes or improves something
+integration          # TN — the connection of one system to another system
+overview             # TN — a short view of the whole subject
+description          # TN — text that gives information about something
+formatting           # TN — the way to format code and text
+load                 # TV — to move a file or data into memory
+contributor          # TN — a person who does work on a project
+integrity            # TN — the condition of being complete and correct
+validation           # TN — the act to check that data obeys the rules
+architecture         # TN — the structure of a system
+checkbox             # TN — a mark that shows a complete task
+feature              # TN — a function of a product
+finding              # TN — information that you get from an examination
+archive              # TN / TV — storage for old records; to move records there
+append               # TV — to add data at the end
+core                 # TN — the parts of a system that are always necessary
+language             # TN — a language for programming or for text
+line                 # TN — one row of text in a file
+log                  # TN — a file that records events in time order
+key                  # TN — a name for a value in a configuration
+define               # TV — to give the meaning or the properties of something
+vision               # TN — a picture of the future that you want
+mission              # TN — the main purpose of the work
+propose              # TV — to say an idea for a decision
+configure            # TV — to set the values of a system
+delegate             # TV — to give work to another person or agent
+delegation           # TN — the act to give work to another person or agent
+tracking             # TN — the continuous recording of a condition
+disable              # TV — to make a function not operate
+directive            # TN — an instruction in a comment for a tool
+deviation            # TN — a change from a rule
+purpose              # TN — the reason that you do something
+stack                # TN — the set of software that a project uses
+dotfile              # TN — a file whose name starts with a dot
+markdown             # TN — a format for files with formatted text
+heading              # TN — a title at the start of a section
+computer             # TN — a machine that processes data
+milestone            # TN — an important point in time in a plan
+debug                # TV — to find and remove errors in a program
+feedback             # TN — information about results that goes back to the worker
+domain               # TN — a subject area
+community            # TN — a group of people with a common interest
+contribution         # TN — work that a person gives to a project
+snippet              # TN — a small piece of code or text
+compliance           # TN — the condition of obeying rules
+compile              # TV — to translate code into a form that a computer runs
+brackets             # TN — the marks [ and ]
+strategy             # TN — a plan to reach a goal
+stage                # TV — to put changes into the git staging area
+protection           # TN — the act to keep something safe
+squash               # TV — to combine many git commits into one commit
+merge                # TV — to combine one branch into another branch
+index                # TN — a list of items with their locations
+specification        # TN — a document that gives the requirements for something
+edit                 # TV — to change a file or text
+percent              # TN — one part of each 100
+character            # TN — a letter, a number, or a symbol
+digit                # TN — one of the number symbols 0 to 9
+authority            # TN — the power to make decisions
+maintenance          # TN — work that keeps a system in good condition
+security             # TN — protection against danger
+uncertainty          # TN — the condition that you do not know something
+remote               # TN — a git repository on another computer
+resolve              # TV — to find and remove the cause of a problem
+conflict             # TN — a disagreement between two changes
+attempt              # TN — one try to do something
+content              # TN — the information in a file
+batch                # TN — a group of items that you process together
+management           # TN — the act to control and direct work
+fence                # TN — a marker line that starts and ends a code block in markdown
+vendor               # TN — a seller. In software: code from an external source that a project includes
+artifact             # TN — a file that a process makes
+parameter            # TN — a value that you give to a program or in a configuration
+extension            # TN — the end of a file name after the dot
+interpret            # TV — to run a program by reading it step by step
+pin                  # TV — to fix a version so that it does not change
+holder               # TN — a person or organization that has a right
+toolchain            # TN — the set of tools that build and test the software
+generate             # TV — to make files from a template
+trailer              # TN — a key and value line at the end of a git commit message
+suffix               # TN — letters that you add at the end of a name
+namespace            # TN — a name that contains other names
+deploy               # TV — to put software on a computer or service for use
+deployment           # TN — the act to put software on a computer or service
+destination          # TN — the place where something goes
+goal                 # TN — a result that you want
+explanation          # TN — text that gives the reason or the meaning
+syntax               # TN — the rules for the form of a language
+enter                # TV — to put input into a computer system
+consequence          # TN — something that happens because of an action
+adoption             # TN — the decision to start to use something
+stash                # TV — to put changes away in a temporary git store
+layout               # TN — the way that the files and directories are arranged
+compiler             # TN — a program that translates code into a form that a computer runs
+cache                # TN — a store for data that the system uses again
+success              # TN — the result that you want
+overlap              # TN — a part that two things share
+scalar               # TN — one value, not a list or a group
+export               # TV — to make a function usable from other code
+initialization       # TN — the start of a program or component
+shutdown             # TN — the stop of a program
+cleanup              # TN — the work to remove temporary data
+runtime              # TN — the time when a program runs
+constant             # TN — a value that does not change
+preset               # TN — a group of values that a tool gives before you change them
+extract              # TV — to take a part out of a text or data
+shebang              # TN — the first line of a script that names its interpreter
+automation           # TN — work that a machine does without a person
+sign                 # TV — to put a cryptographic signature on a commit
+metadata             # TN — data that gives information about other data
+adopt                # TV — to start to use something
+consider             # TV — to think about something before a decision
+supersede            # TV — to take the place of something older
+variable             # TN — a name for a value that can change
+service              # TN — a program that runs in the background, or a named unit in compose
+mount                # TV — to make a directory available in a container
+list                 # TN — a series of items in a sequence
+venv                 # TN — an isolated Python environment
+definition           # TN — a statement of the meaning or the properties of something
+
+
+fix                  # TV — to correct an error in code or configuration (software maintenance)
+match                # TV — a glob or regex pattern matches a path (pattern matching)
+label                # TN — the name of an entry for a pre-existing document in .agent-scaffolding.yml
+troubleshooting      # TN — the work to find the cause of a problem in a system
