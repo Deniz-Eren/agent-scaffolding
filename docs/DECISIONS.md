@@ -21,6 +21,58 @@ newest first (git log order).
   ADR.
 - Keep the decisions short. `CHANGELOG.md` records the changes between releases.
 
+<!-- [CAT] Governance -->
+
+## ADR-24 (2026-11-28): Core Git Hooks for Pre-Commit and Commit-Msg Checks
+
+### Context
+
+Target repositories documented pre-commit checks and commit message rules in
+`AGENTS.md` and `docs/skills/git/SKILL.md`, but they had no local git hooks to
+check these rules automatically. Contributors and agents can commit with
+formatting errors, test failures, documentation errors, or invalid commit
+messages.
+
+### Decision
+
+- Make `pre-commit` and `commit-msg` git hooks a core item of the `git` skill
+  and all scaffolded repositories.
+- Keep the tracked hook scripts in `scripts/hooks/pre-commit` and
+  `scripts/hooks/commit-msg`, with templates in `assets/repo/scripts/hooks/`.
+- Give each repository an executable installer script
+  `scripts/install-git-hooks.sh` (template:
+  `assets/repo/scripts/install-git-hooks.sh`). It installs all hooks in
+  `scripts/hooks/` into the local git hooks directory.
+- `scripts/hooks/pre-commit` runs formatter checks, tests, and documentation
+  checks before each commit.
+- `scripts/hooks/commit-msg` uses portable bash and POSIX tools to validate
+  Conventional Commits headers, allowed types, and empty-line separation. It
+  also checks uppercase `BREAKING CHANGE:` tokens and the `Assisted-by:` footer
+  in the last trailer block. For commits with no AI help, set
+  `ALLOW_NO_ASSISTED_BY=1`.
+- `scripts/audit.sh` and `scripts/verify.sh` verify that the installer and the
+  two hook scripts are there and executable. `verify.sh` gives a warning when
+  the hooks are not installed in the local git hooks directory.
+
+### Alternatives
+
+- Put git hooks in an optional module (then target repositories can skip local
+  checks of core git skill rules)
+- Configure `core.hooksPath` in local git config (changes git config and
+  replaces other local user hooks, and does not install individual hook files)
+- Use an external hook manager such as `pre-commit` or `husky` (adds a Python
+  or Node.js runtime dependency to projects that use only git and bash)
+
+### Consequences
+
+- All scaffolded repositories get tracked, dependency-free git hooks and a
+  single script to install them.
+- `scripts/verify.sh` reports a `FAIL` when `scripts/install-git-hooks.sh`,
+  `scripts/hooks/pre-commit`, or `scripts/hooks/commit-msg` is missing or not
+  executable.
+- Projects that upgrade from earlier skill versions get the new hook scripts
+  and git skill section in apply mode.
+
 <!-- [CAT] Documentation -->
 
 ## ADR-23 (2026-11-19): The Name of the Standards Document Is CONVENTIONS.md

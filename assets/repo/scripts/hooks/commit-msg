@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+# {{COPYRIGHT_LINE}}
+#
+# Git commit-msg hook for {{PROJECT_NAME}}.
+# Validates that the commit message obeys the git skill rules:
+# - Conventional Commits header (<type>[(scope)][!]: <description>)
+# - Blank line between subject and body or footers
+# - Uppercase BREAKING CHANGE or BREAKING-CHANGE footer token
+# - Assisted-by: <AgentName>:<Model> [+ <Tool> ...] in the final trailer block
+#   (for commits with no AI help, set ALLOW_NO_ASSISTED_BY=1)
+set -euo pipefail
+
+if [ $# -lt 1 ] || [ ! -f "$1" ]; then
+  echo "error: commit-msg hook requires a commit message file path" >&2
+  exit 1
+fi
+
+MSG_FILE="$1"
+
+# Strip CRLF, cut at git verbose scissor line, drop comment lines, and trim trailing blank lines.
+CLEAN_MSG=$(awk '
+  { sub(/\r$/, "") }
+  /^# -+ >8 -+$/ { exit }
+  /^#/ { next }
+  { lines[++n] = $0 }
+  END {
+    while (n > 0 && lines[n] ~ /^[[:space:]]*$/) { n-- }
+    for (i = 1; i <= n; i++) { print lines[i] }
+  }
+' "$MSG_FILE")
+
+if [ -z "$CLEAN_MSG" ]; then
+  echo "FAIL  commit-msg: commit message is empty" >&2
+  exit 1
+fi
+
+SUBJECT=$(printf '%s\n' "$CLEAN_MSG" | sed -n '1p')
+
+# Skip validation for git merge commits.
+MERGE_HEAD_PATH=$(git rev-parse --git-path MERGE_HEAD 2>/dev/null || true)
+if [[ "$SUBJECT" =~ ^Merge\  ]] || { [ -n "$MERGE_HEAD_PATH" ] && [ -f "$MERGE_HEAD_PATH" ]; }; then
+  exit 0
+fi
+
+errors=()
+
+# 1. Conventional Commits subject line and allowed types.
+ALLOWED_TYPES='feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|scaffold'
+HEADER_RE="^(${ALLOWED_TYPES})(\\([a-zA-Z0-9._/-]+\\))?!?: [^[:space:]].*$"
+if ! printf '%s\n' "$SUBJECT" | grep -qE "$HEADER_RE"; then
+  errors+=("subject line does not match '<type>[(scope)][!]: <description>' (allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert, scaffold)")
+fi
+
+# 2. Blank line between subject and body or footers.
+LINE_COUNT=$(printf '%s\n' "$CLEAN_MSG" | wc -l | tr -d ' ')
+if [ "$LINE_COUNT" -ge 2 ]; then
+  LINE2=$(printf '%s\n' "$CLEAN_MSG" | sed -n '2p')
+  if printf '%s\n' "$LINE2" | grep -q '[^[:space:]]'; then
+    errors+=("line 2 must be blank to separate the subject from the body or footers")
+  fi
+fi
+
+# 3. Uppercase BREAKING CHANGE / BREAKING-CHANGE footer token.
+while IFS= read -r line; do
+  if printf '%s\n' "$line" | grep -qiE '^[[:space:]]*breaking[[:space:]-]change:' && \
+     ! printf '%s\n' "$line" | grep -qE '^(BREAKING CHANGE|BREAKING-CHANGE): '; then
+    errors+=("breaking change footer must start with uppercase 'BREAKING CHANGE: ' or 'BREAKING-CHANGE: '")
+    break
+  fi
+done <<<"$CLEAN_MSG"
+
+# 4. Exact casing for Assisted-by footer token.
+while IFS= read -r line; do
+  if printf '%s\n' "$line" | grep -qiE '^[[:space:]]*assisted-by:' && \
+     ! printf '%s\n' "$line" | grep -qE '^Assisted-by: '; then
+    errors+=("Assisted-by footer must start with 'Assisted-by: ' (exact casing, one space after colon)")
+    break
+  fi
+done <<<"$CLEAN_MSG"
+
+# 5. Extract final paragraph (trailer block) and validate Assisted-by footer.
+FINAL_PARA=$(printf '%s\n' "$CLEAN_MSG" | awk '
+  { lines[++n] = $0 }
+  END {
+    start = 1
+    for (i = n; i >= 1; i--) {
+      if (lines[i] ~ /^[[:space:]]*$/) { start = i + 1; break }
+    }
+    for (i = start; i <= n; i++) { print lines[i] }
+  }
+')
+
+HAS_ASSISTED_ANY=0
+if printf '%s\n' "$CLEAN_MSG" | grep -qE '^Assisted-by: '; then
+  HAS_ASSISTED_ANY=1
+fi
+
+HAS_ASSISTED_FINAL=0
+if printf '%s\n' "$FINAL_PARA" | grep -qE '^Assisted-by: '; then
+  HAS_ASSISTED_FINAL=1
+fi
+
+if [ "$HAS_ASSISTED_ANY" -eq 1 ]; then
+  if [ "$HAS_ASSISTED_FINAL" -eq 0 ]; then
+    errors+=("'Assisted-by:' must be in the final trailer block at the end of the commit message")
+  else
+    # Verify the trailer block is separated from the subject/body by a blank line.
+    if [ "$FINAL_PARA" = "$CLEAN_MSG" ]; then
+      errors+=("separate the trailer block from the subject line with a blank line")
+    else
+      FIRST_TRAILER=$(printf '%s\n' "$FINAL_PARA" | sed -n '1p')
+      if ! printf '%s\n' "$FIRST_TRAILER" | grep -qE '^([A-Za-z0-9-]+: |[A-Za-z0-9-]+ #[0-9]|BREAKING CHANGE: )'; then
+        errors+=("separate the trailer block from the commit body with a blank line")
+      fi
+    fi
+  fi
+
+  # Validate Assisted-by value format and reject literal placeholders.
+  while IFS= read -r line; do
+    if ! printf '%s\n' "$line" | grep -qE '^Assisted-by: [^[:space:]:]+:[^[:space:]].*$'; then
+      errors+=("invalid Assisted-by format; expected 'Assisted-by: <AgentName>:<Model> [+ <Tool> ...]'")
+    fi
+    if printf '%s\n' "$line" | grep -qiE '<AgentName>|<Model>|<agent-name>|<model>|agent-name:model-name'; then
+      errors+=("replace placeholder text in Assisted-by with the agent and model of the current session")
+    fi
+  done < <(printf '%s\n' "$CLEAN_MSG" | grep -E '^Assisted-by: ')
+elif [ "${ALLOW_NO_ASSISTED_BY:-0}" != "1" ]; then
+  errors+=("missing 'Assisted-by: <AgentName>:<Model> [+ <Tool> ...]' footer (for commits with no AI help, set ALLOW_NO_ASSISTED_BY=1)")
+fi
+
+if [ "${#errors[@]}" -gt 0 ]; then
+  echo "FAIL  commit-msg validation failed:" >&2
+  for err in "${errors[@]}"; do
+    echo "  - $err" >&2
+  done
+  cat >&2 <<'EOF'
+
+Expected format (see docs/skills/git/SKILL.md):
+  <type>[(scope)][!]: <description>
+
+  [optional body]
+
+  Assisted-by: <AgentName>:<Model> [+ <Tool> ...]
+EOF
+  exit 1
+fi
+
+exit 0

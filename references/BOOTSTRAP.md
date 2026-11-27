@@ -69,20 +69,25 @@ example `docs:` for a documentation project, `build:` for build files).
 3. Make `docs/skills/create-skill/`, `docs/skills/git/`,
    `docs/skills/state-management/`, and `docs/skills/keepachangelog/` from the
    templates.
-4. **Module `dev_environment`:** generate the environment files, make the
+4. Make `scripts/install-git-hooks.sh`, `scripts/hooks/pre-commit`, and
+   `scripts/hooks/commit-msg` from `$SKILL/assets/repo/scripts/`. Set the
+   executable permission on all three scripts. Configure
+   `scripts/hooks/pre-commit` for the test, documentation, and formatter checks
+   of the project, and run `scripts/install-git-hooks.sh`.
+5. **Module `dev_environment`:** generate the environment files, make the
    environment, and run its smoke test
    ([modules/dev-environment.md](modules/dev-environment.md)). Then make
    `docs/skills/dev-environment/SKILL.md` with the commands that the project
    uses. Do this **before** the tool configs, so that the tools run in the
    environment.
-5. If a build system is configured, make the build file or files at the root.
-6. **Module `tool_configs`:** make sure of the tool versions **in the
+6. If a build system is configured, make the build file or files at the root.
+7. **Module `tool_configs`:** make sure of the tool versions **in the
    development environment**. Then generate small configs, and verify them
    ([modules/tool-configs.md](modules/tool-configs.md)).
-7. Make one skill for each configured tool (build system, test framework,
+8. Make one skill for each configured tool (build system, test framework,
    linter, formatter). Use the `create-skill` procedure, and obey [RULES.md
    §11](RULES.md#11-rules-for-skills).
-8. Commit: `chore: add governance, skills and tool configuration`.
+9. Commit: `chore: add governance, skills and tool configuration`.
 
 ## Phase 4: Boilerplate
 
@@ -95,7 +100,9 @@ Skip this phase if the `boilerplate` module is off.
 
 1. **Module `build_agents`:** make the scripts and `docs/agents/*.md`
    ([modules/build-agents.md](modules/build-agents.md)). From this point,
-   delegate all build, test, and format runs to these agents.
+   delegate all build, test, and format runs to these agents. Confirm that
+   `scripts/hooks/pre-commit` runs the configured formatter checks, tests, and
+   documentation checks, and run `scripts/install-git-hooks.sh`.
 2. Run the build, the tests, and the format check (through the build agents, if
    they are on). Repair the problems until all results are correct ([RULES.md
    §13](RULES.md#13-build-integrity)).

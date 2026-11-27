@@ -63,4 +63,7 @@ agent-scaffolding
 state management
 Conventional Commits
 Predict → Act → Verify
+commit-msg
+git hook
+git hooks
 

@@ -38,7 +38,7 @@ If verification is not correct, go back to Act, repair the problem, and verify a
 | Command | Permitted | Approval necessary |
 |---|---|---|
 | Read files. Run `--version` checks. | ✓ | — |
-| Run build, test, and formatter scripts | ✓ | — |
+| Run build, test, formatter, and hook scripts | ✓ | — |
 | Commit | the commit mode in `.agent-scaffolding.yml` gives the rules | — |
 <!-- module:dev_environment -->
 | Install the project dependencies in the development environment | ✓ | — |
@@ -80,7 +80,7 @@ Each commit message obeys Conventional Commits. It has an empty line and an `Ass
 Assisted-by: <AgentName>:<Model> [+ <Tool> ...]
 ```
 
-For the full procedure, see the [git skill](docs/skills/git/SKILL.md).
+Install the repository `pre-commit` and `commit-msg` hooks with `scripts/install-git-hooks.sh`. Do not bypass them with `--no-verify`. For the full procedure, see the [git skill](docs/skills/git/SKILL.md).
 
 ---
 
@@ -88,6 +88,7 @@ For the full procedure, see the [git skill](docs/skills/git/SKILL.md).
 
 Before each commit, verify:
 
+- [ ] The git hooks are installed (`scripts/install-git-hooks.sh`), and `pre-commit` and `commit-msg` are correct
 - [ ] The commit message obeys Conventional Commits, and it has the `Assisted-by:` footer
 - [ ] The build and the tests are correct (if applicable)
 - [ ] The formatter reports no findings (if applicable)

@@ -114,6 +114,18 @@ that points to `AGENTS.md`. Do this only with user approval.
   same trailer block as `Assisted-by:`, with no empty line between them.
 - Make one atomic commit for each phase. Do not push without clear approval from
   the user.
+- **Git hooks:** each target repository keeps tracked `pre-commit` and
+  `commit-msg` hook scripts in `scripts/hooks/` and an executable installer
+  script `scripts/install-git-hooks.sh` (templates in
+  [assets/repo/scripts/](../assets/repo/scripts/)).
+  - `scripts/hooks/pre-commit` runs formatter checks, tests, and documentation
+    checks before each commit.
+  - `scripts/hooks/commit-msg` validates the commit message against the rules of
+    the git skill. It checks the Conventional Commits header and types,
+    empty-line separation, uppercase `BREAKING CHANGE:` tokens, and the
+    `Assisted-by:` footer.
+  - `scripts/install-git-hooks.sh` installs the hook scripts into the local git
+    hooks directory. Do not bypass the hooks with `--no-verify`.
 
 ## 6. Root files
 

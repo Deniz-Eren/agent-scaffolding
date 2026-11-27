@@ -54,7 +54,7 @@ gen_files() {
   local e
   for e in "${EXCLUDES[@]}"; do [ -n "$e" ] && prune+=(-o -path "./${e%/}"); done
   find . \( "${prune[@]}" \) -prune -o \
-    -type f \( -name '*.md' -o -name '*.mdx' -o -name '*.sh' -o -name '*.yml' -o -name '*.yaml' -o -name '*.toml' -o -name '*.json' -o -name '*.cfg' -o -name '*.ini' \
+    -type f \( -name '*.md' -o -name '*.mdx' -o -name '*.sh' -o -path './scripts/hooks/*' -o -name '*.yml' -o -name '*.yaml' -o -name '*.toml' -o -name '*.json' -o -name '*.cfg' -o -name '*.ini' \
       -o -name '*.py' -o -name '*.c' -o -name '*.h' -o -name '*.cc' -o -name '*.cpp' -o -name '*.hpp' -o -name '*.rs' -o -name '*.go' -o -name '*.js' -o -name '*.mjs' \
       -o -name '*.ts' -o -name '*.tsx' -o -name '*.jsx' -o -name '*.java' -o -name '*.kt' -o -name '*.cs' -o -name '*.rb' -o -name '*.cmake' -o -name 'CMakeLists.txt' \
       -o -name 'Makefile' -o -name 'Dockerfile' -o -name 'Containerfile' -o -name '.gitignore' -o -name '.python-version' \) -print 2>/dev/null
@@ -120,7 +120,7 @@ while IFS= read -r f; do
 done < <(gen_files)
 residue=${residue# }
 [ -z "$residue" ] && ok "no template placeholders or module markers left" || bad "template text in: $residue"
-todo=$(find scripts -name '*.sh' -print0 2>/dev/null | xargs -0 -r grep -lE '^[[:space:]]*(: )?# TODO:' 2>/dev/null)
+todo=$(find scripts -type f \( -name '*.sh' -o -path 'scripts/hooks/*' \) -print0 2>/dev/null | xargs -0 -r grep -lE '^[[:space:]]*(: )?# TODO:' 2>/dev/null)
 [ -z "$todo" ] || wrn "TODO lines remain in: $(echo "$todo" | tr '\n' ' ')"
 guide=""
 for f in README.md AGENTS.md docs/*.md; do
@@ -186,6 +186,14 @@ else
   bad ".agents/skills missing (standard agent link: mkdir -p .agents && ln -sfn ../docs/skills .agents/skills)"
 fi
 
+# Git hook scripts (core)
+for x in scripts/install-git-hooks.sh scripts/hooks/pre-commit scripts/hooks/commit-msg; do
+  if [ ! -f "$x" ]; then bad "$x missing"
+  elif [ ! -x "$x" ]; then bad "$x not executable"
+  else ok "$x present"
+  fi
+done
+
 # 7. Module files
 if enabled dev_environment; then
   [ -f docs/skills/dev-environment/SKILL.md ] && ok "dev-environment skill" || bad "docs/skills/dev-environment/SKILL.md missing"
@@ -241,6 +249,14 @@ fi
 
 # 9. Git
 if [ -d .git ]; then
+  hooks_dir=$(git rev-parse --git-path hooks 2>/dev/null || echo .git/hooks)
+  for h in pre-commit commit-msg; do
+    if [ -x "$hooks_dir/$h" ]; then
+      ok "git hook $h installed"
+    else
+      wrn "git hook $h not installed (run scripts/install-git-hooks.sh)"
+    fi
+  done
   dirty=$(git status --porcelain | wc -l | tr -d ' ')
   [ "$dirty" = "0" ] && ok "git working tree clean" || wrn "git working tree has $dirty changes that are not committed"
   total=$(git rev-list --count HEAD 2>/dev/null || echo 0)

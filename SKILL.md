@@ -4,14 +4,14 @@ description: >
   Bootstrap a new project, or apply the skill to an existing project. The
   scaffold that it makes is prepared for agents and follows best practices. It
   includes AGENTS.md governance (commit modes, the git protocol with Assisted-by
-  footers, a pre-commit checklist). It also includes state documents (TASKS,
-  DECISIONS, ARCHITECTURE, CONVENTIONS), a changelog, and project skills that
-  obey the Agent Skills spec. Optional parts add an isolated development
-  environment, build and format subagents, tool configs, copyright headers, and
-  agent platform links. This skill applies when the user tells you to scaffold
-  or bootstrap a project for AI agents. It also applies when the user tells you
-  to add AGENTS.md or agent governance, or to audit a repository against these
-  conventions.
+  footers, git hooks with an installer script, a pre-commit checklist). It also
+  includes state documents (TASKS, DECISIONS, ARCHITECTURE, CONVENTIONS), a
+  changelog, and project skills that obey the Agent Skills spec. Optional parts
+  add an isolated development environment, build and format subagents, tool
+  configs, copyright headers, and agent platform links. This skill applies when
+  the user tells you to scaffold or bootstrap a project for AI agents. It also
+  applies when the user tells you to add AGENTS.md or agent governance, or to
+  audit a repository against these conventions.
 license: MIT
 compatibility: >
   Git and bash are necessary. Optional tools are podman or docker (development
@@ -20,7 +20,7 @@ compatibility: >
   commands.
 metadata:
   author: Deniz Eren
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # agent-scaffolding
@@ -128,9 +128,10 @@ The report contains:
   the name and the email from the configuration. The value `current_user` means
   the git configuration of the current user. Use Conventional Commits. End each
   message with an `Assisted-by: <agent>:<model>` footer that gives the name of
-  the agent and the model of the current session. In AUTONOMOUS mode, use
-  `--no-gpg-sign`. In HITL mode, stop and print `WAITING FOR GPG SIGNATURE`. Do
-  not push without approval.
+  the agent and the model of the current session. Install and use the
+  `pre-commit` and `commit-msg` git hooks (`scripts/install-git-hooks.sh`). In
+  AUTONOMOUS mode, use `--no-gpg-sign`. In HITL mode, stop and print `WAITING
+  FOR GPG SIGNATURE`. Do not push without approval.
 - **Safety:** do not overwrite, erase, or rename a file of the user without
   clear approval. If the working tree is not clean, stop, and put your question
   to the user first.
@@ -148,8 +149,9 @@ The report contains:
   Skills. The attribution entries are in
   [references/SPEC-NOTICES.md](references/SPEC-NOTICES.md).
 - [assets/repo/](assets/repo/): Templates for `AGENTS.md`, `README.md`,
-  `.gitignore`, `.agent-scaffolding.yml`, the state documents in `docs/`, the
-  core skills, the agent definitions, and the script skeletons.
+  `.gitignore`, `.agent-scaffolding.yml`, and the state documents in `docs/`. It
+  also contains the core skills, agent definitions, git hooks, hook installer,
+  and script skeletons.
 - [scripts/audit.sh](scripts/audit.sh): Read-only gap report.
 - [scripts/verify.sh](scripts/verify.sh): A check that the target agrees with
   the rules. After a failure, the exit code is not 0.

@@ -20,6 +20,14 @@ read this file when they upgrade a project in apply mode.
 
 ## [Unreleased]
 
+### Added
+
+- Core git hooks (`scripts/hooks/pre-commit` and `scripts/hooks/commit-msg`)
+  and an installer script (`scripts/install-git-hooks.sh`) in `assets/repo/` and
+  this repository (ADR-24). Updated the `git` skill, `RULES.md`, `BOOTSTRAP.md`,
+  `APPLY.md`, `VERIFICATION.md`, `scripts/audit.sh`, and `scripts/verify.sh` for
+  the hooks.
+
 ### Changed
 
 - `docs/STANDARDS.md` has the new name `docs/CONVENTIONS.md` (ADR-23).

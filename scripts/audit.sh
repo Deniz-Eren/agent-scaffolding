@@ -113,6 +113,21 @@ elif [ -d .agents/skills ]; then
 else
   say MISSING ".agents/skills" "standard agent link: mkdir -p .agents && ln -sfn ../docs/skills .agents/skills"
 fi
+check_file scripts/install-git-hooks.sh "installs git hooks from scripts/hooks/"
+check_file scripts/hooks/pre-commit "runs formatter, test, and documentation checks"
+check_file scripts/hooks/commit-msg "validates commit messages against the git skill"
+if [ -d .git ]; then
+  hooks_dir=$(git rev-parse --git-path hooks 2>/dev/null || echo .git/hooks)
+  for h in pre-commit commit-msg; do
+    if [ -x "$hooks_dir/$h" ]; then
+      say OK "$hooks_dir/$h" "installed"
+    elif [ -e "$hooks_dir/$h" ]; then
+      say CHECK "$hooks_dir/$h" "present but not executable"
+    else
+      say INFO "$hooks_dir/$h" "not installed (run scripts/install-git-hooks.sh)"
+    fi
+  done
+fi
 echo
 
 section() {
@@ -171,7 +186,7 @@ source_files() {
   find . \( "${PRUNE[@]}" -o -path './docs/skills/*/references' \) -prune -o -type f \
     \( -name '*.c' -o -name '*.h' -o -name '*.cc' -o -name '*.cpp' -o -name '*.hpp' -o -name '*.cxx' -o -name '*.py' -o -name '*.rs' \
        -o -name '*.go' -o -name '*.js' -o -name '*.mjs' -o -name '*.ts' -o -name '*.tsx' -o -name '*.jsx' -o -name '*.java' -o -name '*.kt' \
-       -o -name '*.cs' -o -name '*.swift' -o -name '*.rb' -o -name '*.sh' -o -name '*.cmake' -o -name 'CMakeLists.txt' \
+       -o -name '*.cs' -o -name '*.swift' -o -name '*.rb' -o -name '*.sh' -o -path './scripts/hooks/*' -o -name '*.cmake' -o -name 'CMakeLists.txt' \
        -o -name '*.toml' -o -name '*.yml' -o -name '*.yaml' -o -name 'Dockerfile' -o -name 'Containerfile' -o -name 'Makefile' \) \
     ! -name '.agent-scaffolding.yml' -print0 2>/dev/null
 }

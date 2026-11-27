@@ -57,7 +57,7 @@ again. Do not start the next phase until the current phase is correct.
 | Command | Permitted | Approval necessary |
 |---|---|---|
 | Read files. Run `--version` checks. | ✓ | — |
-| Run build, test, and formatter scripts | ✓ | — |
+| Run build, test, formatter, and hook scripts | ✓ | — |
 | Commit | the commit mode in `.agent-scaffolding.yml` gives the rules | — |
 | Install system packages | ✗ | ✓ |
 | Erase project files | ✗ | ✓ |
@@ -98,7 +98,9 @@ the model **of the current session**. Do not copy them from earlier commits:
 Assisted-by: <AgentName>:<Model> [+ <Tool> ...]
 ```
 
-For the full procedure, see the [git skill](docs/skills/git/SKILL.md).
+Install the repository `pre-commit` and `commit-msg` hooks with
+`scripts/install-git-hooks.sh`. Do not bypass them with `--no-verify`. For the
+full procedure, see the [git skill](docs/skills/git/SKILL.md).
 
 ---
 
@@ -106,9 +108,12 @@ For the full procedure, see the [git skill](docs/skills/git/SKILL.md).
 
 Before each commit, verify:
 
+- [ ] The git hooks are installed (`scripts/install-git-hooks.sh`), and
+  `pre-commit` and `commit-msg` are correct
 - [ ] The commit message obeys Conventional Commits, and it has the
   `Assisted-by:` footer
-- [ ] `shellcheck scripts/*.sh assets/repo/scripts/*.sh` reports no findings
+- [ ] `shellcheck scripts/*.sh scripts/hooks/* assets/repo/scripts/*.sh
+  assets/repo/scripts/hooks/*` reports no findings
 - [ ] `agentskills validate` is correct for the skill (run it on a path with
   `agent-scaffolding` as the last component)
 - [ ] `scripts/verify.sh .` reports no FAIL

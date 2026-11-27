@@ -2,7 +2,7 @@
 # Written by the agent-scaffolding agent skill. Commit this file.
 # This repository applies its own skill to itself.
 
-skill_version: "0.1.0"
+skill_version: "0.3.0"
 
 project:
   name: "agent-scaffolding"

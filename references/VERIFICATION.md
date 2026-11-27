@@ -53,6 +53,8 @@ The script reports `FAIL` for these conditions:
 - **Build (`--with-build`):** A build or formatter script is not correct. The
   log stays in a file for a short time, and the output shows its path.
 - **Git:** The target is not a repository.
+- **Git hooks:** `scripts/install-git-hooks.sh`, `scripts/hooks/pre-commit`, or
+  `scripts/hooks/commit-msg` is missing or not executable.
 - **CHANGELOG:** `CHANGELOG.md` is missing, or it has no `## [Unreleased]`
   section.
 
@@ -61,6 +63,8 @@ WARN results (they do not cause a failure):
 - `# TODO:` lines with no content in the scripts
 - A SKILL.md with 500 lines or more
 - A dirty working tree
+- The `pre-commit` or `commit-msg` hook is not installed in the local git hooks
+  directory
 - Template comments (`<!-- ... -->`) that stay in `README.md`, `AGENTS.md`, or
   `docs/*.md`. The category markers `<!-- [CAT] ... -->` and `<!-- [DOC] ...
   -->` are permitted.
@@ -82,6 +86,9 @@ find into the report at the end:
 - [ ] Each commit obeys the commit mode: `--no-gpg-sign` in AUTONOMOUS mode, a
   stop in HITL mode. Each commit has the identity inline and the `Assisted-by:`
   footer.
+- [ ] `scripts/install-git-hooks.sh` installs `pre-commit` and `commit-msg`, and
+  `scripts/hooks/pre-commit` runs the configured tests, documentation checks,
+  and formatter checks.
 - [ ] DRY: no commands with many steps in files that are not skill files
   (README.md can have single commands)
 - [ ] The skills do not share parts (no pair shares more than 30 percent of its

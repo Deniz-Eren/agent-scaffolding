@@ -57,10 +57,13 @@ applies the skill to itself, as recorded in `.agent-scaffolding.yml`.
 │   ├── skills/            ← create-skill, git, state-management,
 │   │                         dev-environment, keepachangelog
 │   ├── agents/            ← build.md, format-validator.md
-│   └── scripts/           ← build-agent.sh, formatter-agent.sh, enter-dev.sh
+│   └── scripts/           ← build-agent.sh, formatter-agent.sh, enter-dev.sh,
+│                             install-git-hooks.sh, hooks/ (pre-commit, commit-msg)
 ├── scripts/
 │   ├── audit.sh           ← Read-only gap report for a target directory
-│   └── verify.sh          ← Check of a target directory against the rules
+│   ├── verify.sh          ← Check of a target directory against the rules
+│   ├── install-git-hooks.sh ← Installs hooks from scripts/hooks/
+│   └── hooks/             ← Tracked pre-commit and commit-msg hooks
 └── docs/                  ← State documents of the repository
     ├── TASKS.md, VISION.md, DECISIONS.md
     ├── CONVENTIONS.md, ARCHITECTURE.md, THIRD-PARTY-NOTICES.md
@@ -92,6 +95,8 @@ applies the skill to itself, as recorded in `.agent-scaffolding.yml`.
   item and module item. It does not write.
 - **`scripts/verify.sh`:** Reports PASS, WARN, and FAIL. After a FAIL, the exit
   code is not 0. It obeys `exclude_paths` in the config of the target.
+- **`scripts/install-git-hooks.sh` and `scripts/hooks/`:** Install and run the
+  `pre-commit` and `commit-msg` git hooks for this repository.
 
 ### Repository governance
 
