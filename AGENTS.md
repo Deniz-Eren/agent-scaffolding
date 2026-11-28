@@ -98,9 +98,11 @@ the model **of the current session**. Do not copy them from earlier commits:
 Assisted-by: <AgentName>:<Model> [+ <Tool> ...]
 ```
 
-Install the repository `pre-commit` and `commit-msg` hooks with
-`scripts/install-git-hooks.sh`. Do not bypass them with `--no-verify`. For the
-full procedure, see the [git skill](docs/skills/git/SKILL.md).
+Run `scripts/install-git-hooks.sh` one time on each repository instance to
+install the `pre-commit` and `commit-msg` hooks. Check that the hooks are not
+installed before you install them (`scripts/install-git-hooks.sh --check`). Do
+not bypass the hooks with `--no-verify`. For the full procedure, see the
+[git skill](docs/skills/git/SKILL.md).
 
 ---
 

@@ -50,22 +50,22 @@ Assisted-by: agent-name:model-name
 
 ## Git hooks
 
-This repository uses tracked `pre-commit` and `commit-msg` hooks in `scripts/hooks/`. Install them after you clone the repository, and before your first commit:
+This repository uses tracked `pre-commit` and `commit-msg` hooks in `scripts/hooks/`. Run `scripts/install-git-hooks.sh` one time on each repository instance. Check that the hooks are not installed before you run the installer:
 
 ```bash
-scripts/install-git-hooks.sh
+scripts/install-git-hooks.sh --check || scripts/install-git-hooks.sh
 ```
 
-The installer links (or copies) each file in `scripts/hooks/` into the local git hooks directory.
+The installer links (or copies) each file in `scripts/hooks/` into the local git hooks directory. It skips hooks that are already installed.
 
-- **`scripts/hooks/pre-commit`:** Runs formatter checks, tests, and documentation checks before each commit. Keep this hook updated when the project adds or changes test, documentation, or formatter commands.
-- **`scripts/hooks/commit-msg`:** Validates that the commit message obeys the rules of this skill. It checks the Conventional Commits header, the allowed types, and the empty line after the subject. It also checks uppercase `BREAKING CHANGE:` tokens and the `Assisted-by:` footer in the last trailer block. For commits with no AI help, set `ALLOW_NO_ASSISTED_BY=1`.
+- **`scripts/hooks/pre-commit`:** Runs formatter checks, tests, and documentation checks before each commit. Keep this hook specialized to the tests, formatters, and documentation rules of the project across all documents. Include rules from other active skills (for example line length limits, prose line packing, file headers, or traceability checks).
+- **`scripts/hooks/commit-msg`:** Validates that the commit message obeys the rules of this skill. It checks the Conventional Commits header, the allowed types, and the empty line after the subject. It also checks uppercase `BREAKING CHANGE:` tokens and the `Assisted-by:` footer in the last trailer block. Keep this hook specialized to any text rules of the project or other active skills (for example maximum line length, prose line packing, or traceability references). For commits with no AI help, set `ALLOW_NO_ASSISTED_BY=1`.
 
 Do not use `--no-verify` to skip the git hooks. If a hook is not correct, repair the problem and commit again.
 
 ## Workflow
 
-1. Make sure that the git hooks are installed (`scripts/install-git-hooks.sh`).
+1. Check that the git hooks are installed on this repository instance (`scripts/install-git-hooks.sh --check`). If they are not installed, run `scripts/install-git-hooks.sh`.
 2. Run `git status`, and stage only the files for this change.
 3. Look at the staged diff with `git diff --staged`.
 4. Complete the pre-commit checklist in [AGENTS.md](../../../AGENTS.md). For the state documents, see the [state-management skill](../state-management/SKILL.md).

@@ -22,6 +22,10 @@ read this file when they upgrade a project in apply mode.
 
 ### Added
 
+- Check-before-install behavior (`--check` and skip when installed) in
+  `scripts/install-git-hooks.sh` and one-time install instructions in `AGENTS.md`
+  (ADR-25). Agents must also specialize `pre-commit` across all documents and
+  `commit-msg` for rules from other active skills.
 - Core git hooks (`scripts/hooks/pre-commit` and `scripts/hooks/commit-msg`)
   and an installer script (`scripts/install-git-hooks.sh`) in `assets/repo/` and
   this repository (ADR-24). Updated the `git` skill, `RULES.md`, `BOOTSTRAP.md`,

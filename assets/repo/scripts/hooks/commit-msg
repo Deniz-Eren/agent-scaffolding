@@ -2,12 +2,15 @@
 # {{COPYRIGHT_LINE}}
 #
 # Git commit-msg hook for {{PROJECT_NAME}}.
-# Validates that the commit message obeys the git skill rules:
+# Validates that the commit message obeys the git skill rules and any project
+# or active-skill text rules (for example maximum line length, prose line
+# packing, or traceability references):
 # - Conventional Commits header (<type>[(scope)][!]: <description>)
 # - Blank line between subject and body or footers
 # - Uppercase BREAKING CHANGE or BREAKING-CHANGE footer token
 # - Assisted-by: <AgentName>:<Model> [+ <Tool> ...] in the final trailer block
 #   (for commits with no AI help, set ALLOW_NO_ASSISTED_BY=1)
+# Specialize section 6 below for rules of {{PROJECT_NAME}} and other active skills.
 set -euo pipefail
 
 if [ $# -lt 1 ] || [ ! -f "$1" ]; then
@@ -127,6 +130,12 @@ if [ "$HAS_ASSISTED_ANY" -eq 1 ]; then
 elif [ "${ALLOW_NO_ASSISTED_BY:-0}" != "1" ]; then
   errors+=("missing 'Assisted-by: <AgentName>:<Model> [+ <Tool> ...]' footer (for commits with no AI help, set ALLOW_NO_ASSISTED_BY=1)")
 fi
+
+# 6. Project-specific commit message rules.
+# Specialize this section for rules of {{PROJECT_NAME}} and any other active
+# skills (for example maximum line length, prose line packing for commit bodies,
+# or traceability references). Remove the TODO line after specialization.
+: # TODO: add project-specific commit message checks (or remove if none apply)
 
 if [ "${#errors[@]}" -gt 0 ]; then
   echo "FAIL  commit-msg validation failed:" >&2

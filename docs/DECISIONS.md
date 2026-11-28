@@ -23,6 +23,49 @@ newest first (git log order).
 
 <!-- [CAT] Governance -->
 
+## ADR-25 (2026-11-28): Specialize Git Hooks per Project and Check Before Installing
+
+### Context
+
+Generic git hook templates cannot know project-specific rules from other active
+skills (for example maximum line length, prose line packing, file headers, or
+traceability checks from `docs-traceability-setup`). Also, `AGENTS.md` must
+tell agents to check hook installation on the repository instance before they
+run the installer one time.
+
+### Decision
+
+- `AGENTS.md` tells agents to run `scripts/install-git-hooks.sh` one time on
+  each repository instance and to check that the hooks are not installed before
+  installing (`scripts/install-git-hooks.sh --check`).
+- `scripts/install-git-hooks.sh` checks each hook before installing, skips
+  hooks that are installed, and accepts `--check` for a read-only check.
+- `RULES.md`, `BOOTSTRAP.md`, `APPLY.md`, `VERIFICATION.md`, the `git` skill,
+  and the hook templates require project-specific hooks. Agents must specialize
+  `scripts/hooks/pre-commit` and `scripts/hooks/commit-msg` for the target
+  project and its other active skills.
+- `scripts/hooks/pre-commit` checks all project documents against project and
+  active-skill rules (such as line length, prose line packing, and headers).
+  `scripts/hooks/commit-msg` obeys the same applicable text rules in addition to
+  the `git` skill rules.
+
+### Alternatives
+
+- Keep generic hook templates with no specialization requirement (misses rules
+  from other active skills and project conventions)
+- Re-install hooks unconditionally on each run (does unnecessary writes and
+  gives no read-only check option for agents)
+
+### Consequences
+
+- Target repositories get hooks tailored to their full rule set, including
+  other skills used in the project.
+- `assets/repo/scripts/hooks/commit-msg` includes a `# TODO:` marker for
+  project-specific rules, so `scripts/verify.sh` warns if an agent copies it
+  without specialization.
+
+<!-- [CAT] Governance -->
+
 ## ADR-24 (2026-11-28): Core Git Hooks for Pre-Commit and Commit-Msg Checks
 
 ### Context

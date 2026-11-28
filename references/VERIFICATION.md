@@ -86,9 +86,11 @@ find into the report at the end:
 - [ ] Each commit obeys the commit mode: `--no-gpg-sign` in AUTONOMOUS mode, a
   stop in HITL mode. Each commit has the identity inline and the `Assisted-by:`
   footer.
-- [ ] `scripts/install-git-hooks.sh` installs `pre-commit` and `commit-msg`, and
-  `scripts/hooks/pre-commit` runs the configured tests, documentation checks,
-  and formatter checks.
+- [ ] `scripts/install-git-hooks.sh` checks whether hooks are installed before
+  installing `pre-commit` and `commit-msg`. Both hooks are specialized for the
+  target project and its other active skills (tests, formatter checks, and
+  documentation rules across all documents and commit messages, such as line
+  length or prose line packing).
 - [ ] DRY: no commands with many steps in files that are not skill files
   (README.md can have single commands)
 - [ ] The skills do not share parts (no pair shares more than 30 percent of its

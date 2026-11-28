@@ -71,9 +71,13 @@ example `docs:` for a documentation project, `build:` for build files).
    templates.
 4. Make `scripts/install-git-hooks.sh`, `scripts/hooks/pre-commit`, and
    `scripts/hooks/commit-msg` from `$SKILL/assets/repo/scripts/`. Set the
-   executable permission on all three scripts. Configure
-   `scripts/hooks/pre-commit` for the test, documentation, and formatter checks
-   of the project, and run `scripts/install-git-hooks.sh`.
+   executable permission on all three scripts. Specialize
+   `scripts/hooks/pre-commit` and `scripts/hooks/commit-msg` for the target
+   project and any other active skills (for example maximum line length, prose
+   line packing, file headers, or documentation traceability checks across all
+   documents and commit messages). Check that the hooks are not installed
+   (`scripts/install-git-hooks.sh --check`), and run
+   `scripts/install-git-hooks.sh` one time on the repository instance.
 5. **Module `dev_environment`:** generate the environment files, make the
    environment, and run its smoke test
    ([modules/dev-environment.md](modules/dev-environment.md)). Then make
@@ -101,8 +105,10 @@ Skip this phase if the `boilerplate` module is off.
 1. **Module `build_agents`:** make the scripts and `docs/agents/*.md`
    ([modules/build-agents.md](modules/build-agents.md)). From this point,
    delegate all build, test, and format runs to these agents. Confirm that
-   `scripts/hooks/pre-commit` runs the configured formatter checks, tests, and
-   documentation checks, and run `scripts/install-git-hooks.sh`.
+   `scripts/hooks/pre-commit` and `scripts/hooks/commit-msg` are specialized for
+   all configured tests, formatters, documentation rules across all documents,
+   and other active skills. Check hook installation
+   (`scripts/install-git-hooks.sh --check`), and install if missing.
 2. Run the build, the tests, and the format check (through the build agents, if
    they are on). Repair the problems until all results are correct ([RULES.md
    §13](RULES.md#13-build-integrity)).

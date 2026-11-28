@@ -45,8 +45,10 @@ layout, and the conventions. Do not replace them. Example: if the project uses
      this time?
    - **Git hooks:** are `scripts/install-git-hooks.sh`,
      `scripts/hooks/pre-commit`, and `scripts/hooks/commit-msg` there? Are other
-     hooks in `.git/hooks/`? Propose to merge with hooks that are there, not to
-     overwrite them without consent.
+     hooks in `.git/hooks/`? Find the project rules and other active skills (for
+     example line length, prose line packing, file headers, or documentation
+     traceability checks) that the two hooks must check. Propose to merge with
+     hooks that are there, not to overwrite them without consent.
    - **Copyright:** give the source files that have no header.
 
 ## Phase 4: Gap report and plan
