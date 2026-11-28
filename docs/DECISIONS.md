@@ -21,6 +21,51 @@ newest first (git log order).
   ADR.
 - Keep the decisions short. `CHANGELOG.md` records the changes between releases.
 
+<!-- [CAT] Documentation -->
+
+## ADR-26 (2026-11-28): Record Third-Party Licenses as Short Summaries
+
+### Context
+
+`docs/THIRD-PARTY-NOTICES.md`, `references/SPEC-NOTICES.md`, and the
+`state-management` skill told agents to copy full license text blocks into
+`docs/THIRD-PARTY-NOTICES.md`. This added hundreds of lines of legal text for
+specs and dependencies. It made the notice file not easy to read, and agents
+copied large license blocks for each dependency update.
+
+### Decision
+
+- Update `assets/repo/docs/THIRD-PARTY-NOTICES.md`, local
+  `docs/THIRD-PARTY-NOTICES.md`, and `references/SPEC-NOTICES.md` so no full
+  license text blocks go into `THIRD-PARTY-NOTICES.md`.
+- Write a short summary for each license type. Give the license name or SPDX
+  identifier, the copyright holder, and a link to the license text or upstream
+  repository.
+- Divide `THIRD-PARTY-NOTICES.md` into Section 1 (`Copied Files and Snippets`:
+  `Component(s) Used`, `Source`, and `Source License`) and Section 2
+  (`Dependencies and Build Tools`: `Function`, `Source`, and `License`). Remove
+  the `Template A` and `Template B` blocks.
+- Update `assets/repo/skills/state-management/SKILL.md`,
+  `docs/skills/state-management/SKILL.md`, `references/RULES.md`, and
+  `references/BOOTSTRAP.md` so agents write short summaries with no full
+  license text blocks.
+
+### Alternatives
+
+- Keep full license text blocks in `docs/THIRD-PARTY-NOTICES.md` and
+  `references/SPEC-NOTICES.md` (adds hundreds of lines of legal text to all
+  scaffolded repositories)
+- Keep full license text blocks for Section 1 and summaries only for Section 2
+  (copies hundreds of lines of spec license text into all target projects)
+
+### Consequences
+
+- `docs/THIRD-PARTY-NOTICES.md` and `references/SPEC-NOTICES.md` stay short,
+  clear, and easy to keep up to date.
+- Agents record short attribution summaries with no raw license blocks.
+- Projects that upgrade in apply mode can change their
+  `docs/THIRD-PARTY-NOTICES.md` files to short summaries.
+
 <!-- [CAT] Governance -->
 
 ## ADR-25 (2026-11-28): Specialize Git Hooks per Project and Check Before Installing

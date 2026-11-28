@@ -20,7 +20,7 @@ compatibility: >
   commands.
 metadata:
   author: Deniz Eren
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # agent-scaffolding

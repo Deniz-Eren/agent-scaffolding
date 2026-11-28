@@ -34,6 +34,10 @@ read this file when they upgrade a project in apply mode.
 
 ### Changed
 
+- `assets/repo/docs/THIRD-PARTY-NOTICES.md`, `docs/THIRD-PARTY-NOTICES.md`,
+  `references/SPEC-NOTICES.md`, the `state-management` skill, `RULES.md`, and
+  `BOOTSTRAP.md` use short license summaries with no full license text blocks
+  (ADR-26).
 - `docs/STANDARDS.md` has the new name `docs/CONVENTIONS.md` (ADR-23).
 - `AGENTS.md` does not define the commit modes and the signature flag. The
   configuration (`operations.commit_mode`) and the git skill give them (ADR-22).
