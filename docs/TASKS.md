@@ -72,6 +72,8 @@ category.
 - [x] COMPLETE 2026-11-28 feat: require check-before-install hook setup in
   AGENTS.md and project-specific specialization of pre-commit and commit-msg
   hooks (ADR-25)
+- [x] COMPLETE 2026-11-28 refactor: write short license summaries with no full
+  license text blocks in THIRD-PARTY-NOTICES.md and related docs (ADR-26)
 - [ ] Add documents for the development workflow
 - [ ] Do a test of the skill with an agent platform
 

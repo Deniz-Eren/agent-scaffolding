@@ -51,9 +51,10 @@ example `docs:` for a documentation project, `build:` for build files).
 1. Make `docs/TASKS.md`, `docs/VISION.md`, `docs/DECISIONS.md`, and
    `docs/THIRD-PARTY-NOTICES.md` from `$SKILL/assets/repo/docs/`, and
    `CHANGELOG.md` from `$SKILL/assets/repo/CHANGELOG.md`.
-2. For each spec that you copied, add its entry from
+2. For each spec that you copied, add its summary entry from
    `$SKILL/references/SPEC-NOTICES.md` to Section 1 of THIRD-PARTY-NOTICES, and
-   remove the template comment.
+   remove the template comments. Write a short summary of each license type
+   with no full license text blocks.
 3. ADR-1 in the template records the adoption and the commit mode. Add ADRs for
    the other first decisions: the project type, the selected modules, and the
    type of the development environment (if that module is on).

@@ -219,8 +219,9 @@ change, and record an ADR.
   contain tasks.
 - **`docs/CONVENTIONS.md`:** Contains file names, copyright headers, formatting
   rules. Must NOT contain decisions.
-- **`docs/THIRD-PARTY-NOTICES.md`:** Contains attribution for copied files and
-  dependencies. Must NOT contain internal architecture.
+- **`docs/THIRD-PARTY-NOTICES.md`:** Contains summary attribution (source and
+  license type, with no full license text blocks) for copied files,
+  dependencies, and build tools. Must NOT contain internal architecture.
 
 ## 11. Rules for skills
 
