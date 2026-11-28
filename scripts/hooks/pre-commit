@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Copyright (c) 2026 Deniz Eren <deniz.eren@outlook.com>
+# SPDX-License-Identifier: MIT
+#
+# Git pre-commit hook for agent-scaffolding.
+# Runs formatter checks, script tests, and documentation checks before each commit.
+# The exit code is 0 for PASS, and not 0 to block the commit.
+set -euo pipefail
+
+ROOT=$(git rev-parse --show-toplevel)
+cd "$ROOT"
+
+echo "==> pre-commit: formatter checks"
+echo "INFO  no formatter configured for this repository"
+
+echo "==> pre-commit: tests and script checks"
+SHELL_SCRIPTS=(scripts/*.sh scripts/hooks/* assets/repo/scripts/*.sh assets/repo/scripts/hooks/*)
+for s in "${SHELL_SCRIPTS[@]}"; do
+  [ -f "$s" ] || continue
+  bash -n "$s"
+done
+if command -v shellcheck >/dev/null 2>&1; then
+  shellcheck "${SHELL_SCRIPTS[@]}"
+else
+  echo "WARN  shellcheck not installed; skipped static shell analysis"
+fi
+
+echo "==> pre-commit: documentation checks"
+scripts/verify.sh .
+if command -v agentskills >/dev/null 2>&1; then
+  agentskills validate .
+else
+  echo "WARN  agentskills not installed; skipped Agent Skills validation"
+fi
+
+echo "PRE-COMMIT: PASS"

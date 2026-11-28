@@ -230,3 +230,9 @@ fix                  # TV — to correct an error in code or configuration (soft
 match                # TV — a glob or regex pattern matches a path (pattern matching)
 label                # TN — the name of an entry for a pre-existing document in .agent-scaffolding.yml
 troubleshooting      # TN — the work to find the cause of a problem in a system
+hook                 # TN — a script that git runs automatically on a git event
+installer            # TN — a script or program that installs files into a target location
+instance             # TN — one local clone or working copy of a repository
+specialize           # TV — to adapt a generic template script to the specific rules of a project
+traceability         # TN — the documented links between requirements, architecture, code, and tests
+packing              # TN — greedy wrapping of prose lines to a target line width

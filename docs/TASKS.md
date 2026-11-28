@@ -67,6 +67,11 @@ category.
   (ADR-23)
 - [x] COMPLETE 2026-11-19 docs: put all entries of allowed_phrases.txt in one
   section and remove the category label
+- [x] COMPLETE 2026-11-28 feat: enhance the git skill with pre-commit and
+  commit-msg hooks and an installer script (ADR-24)
+- [x] COMPLETE 2026-11-28 feat: require check-before-install hook setup in
+  AGENTS.md and project-specific specialization of pre-commit and commit-msg
+  hooks (ADR-25)
 - [ ] Add documents for the development workflow
 - [ ] Do a test of the skill with an agent platform
 

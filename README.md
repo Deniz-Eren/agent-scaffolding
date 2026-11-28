@@ -30,6 +30,9 @@ values to apply the scaffold again, or to upgrade it.
 - Project skills in `docs/skills/` (`create-skill`, `git`, `state-management`,
   `keepachangelog`), with the specifications that they use (Conventional
   Commits, SemVer, Agent Skills)
+- Git hooks in `scripts/hooks/` and an installer script
+  `scripts/install-git-hooks.sh`. `pre-commit` runs tests, documentation checks,
+  and formatter checks. `commit-msg` validates commit messages.
 - The rules for DRY, document headers, links, and names, plus the import of
   existing documents
 - The standard agent link `.agents/skills` → `docs/skills`, so that agent
@@ -86,9 +89,11 @@ version, see [CHANGELOG.md](CHANGELOG.md).
 ## Development Environment
 
 This project contains only documents and shell scripts. A build system or a
-development environment is not necessary. To make sure that the scripts are
-correct, run `shellcheck scripts/*.sh assets/repo/scripts/*.sh`. To validate the
-skill, run the Agent Skills validator (`agentskills validate <dir>`).
+development environment is not necessary. Install the repository git hooks with
+`scripts/install-git-hooks.sh`. To make sure that the scripts are correct, run
+`shellcheck scripts/*.sh scripts/hooks/* assets/repo/scripts/*.sh
+assets/repo/scripts/hooks/*`. To validate the skill, run the Agent Skills
+validator (`agentskills validate <dir>`).
 
 ## Repository governance
 

@@ -114,6 +114,27 @@ that points to `AGENTS.md`. Do this only with user approval.
   same trailer block as `Assisted-by:`, with no empty line between them.
 - Make one atomic commit for each phase. Do not push without clear approval from
   the user.
+- **Git hooks:** each target repository keeps tracked `pre-commit` and
+  `commit-msg` hook scripts in `scripts/hooks/` and an executable installer
+  script `scripts/install-git-hooks.sh` (templates in
+  [assets/repo/scripts/](../assets/repo/scripts/)). Do not copy the hook
+  templates with no changes. Specialize the two hooks to the target project and
+  its other active skills:
+  - `scripts/hooks/pre-commit` runs formatter checks, tests, and documentation
+    checks across all project documents. Include rules from other active skills
+    and project conventions (for example maximum line length, prose line
+    packing, file headers, or documentation traceability checks).
+  - `scripts/hooks/commit-msg` validates the commit message against the rules of
+    the git skill. It checks the Conventional Commits header and types,
+    empty-line separation, uppercase `BREAKING CHANGE:` tokens, and the
+    `Assisted-by:` footer. Also specialize it to obey text rules from the
+    project and other active skills (for example maximum line length, prose line
+    packing in commit bodies, or traceability references).
+  - `scripts/install-git-hooks.sh` checks whether each hook is installed before
+    it installs missing hooks into the local git hooks directory. `AGENTS.md`
+    tells agents to check that hooks are not installed before they run the
+    installer one time on each repository instance. Do not bypass the hooks with
+    `--no-verify`.
 
 ## 6. Root files
 

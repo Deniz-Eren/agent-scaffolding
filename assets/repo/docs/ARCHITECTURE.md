@@ -26,6 +26,9 @@ The document has a system overview, the directory structure, component descripti
 ├── README.md            ← Entry point
 ├── CHANGELOG.md         ← Changes between versions
 ├── .agent-scaffolding.yml ← Scaffolding configuration
+├── scripts/
+│   ├── install-git-hooks.sh ← Installs git hooks from scripts/hooks/
+│   └── hooks/           ← Tracked pre-commit and commit-msg hooks
 └── docs/
     ├── ARCHITECTURE.md  ← This file
     ├── DECISIONS.md     ← ADRs
@@ -50,6 +53,7 @@ The document has a system overview, the directory structure, component descripti
 | Component | References | Used By |
 |---|---|---|
 | `AGENTS.md` | `docs/skills/git`, `docs/skills/state-management` | All agent platforms |
+| `scripts/install-git-hooks.sh` | `scripts/hooks/pre-commit`, `scripts/hooks/commit-msg` | Local git hooks directory |
 | `.agents/skills` | `docs/skills` (symlink) | Agent platforms (skill discovery) |
 <!-- module:agent_platforms -->
 | `.claude/`, `.github/`, `.pi/`, `.opencode/` | Symlinks to `docs/skills` and `docs/agents` | Platforms that do not read `.agents/` |

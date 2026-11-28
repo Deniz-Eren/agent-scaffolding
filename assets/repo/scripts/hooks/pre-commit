@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+# {{COPYRIGHT_LINE}}
+#
+# Git pre-commit hook for {{PROJECT_NAME}}.
+# Runs formatter checks, tests, and documentation checks before each commit.
+# Specialize this script for {{PROJECT_NAME}} and any other active skills
+# (for example maximum line length, prose line packing, file headers, docs
+# builds, or traceability checks) across all project documents.
+# The exit code is 0 for PASS, and not 0 to block the commit.
+# shellcheck disable=SC2016  # Backticks in regex patterns are literal
+set -euo pipefail
+
+ROOT=$(git rev-parse --show-toplevel)
+cd "$ROOT"
+
+# Removes fenced code blocks (also indented ones) from a markdown file.
+strip_fences() { awk '/^[[:space:]]*(```|~~~)/ {f = !f; next} !f' "$1"; }
+
+# Removes code spans in lines (double-backtick spans first).
+strip_code() { sed -E 's/``[^`]*``//g; s/`[^`]*`//g'; }
+
+# Paths to skip, from "exclude_paths: [a, b]" in .agent-scaffolding.yml.
+EXCLUDES=()
+if [ -f .agent-scaffolding.yml ]; then
+  raw_excludes=$(sed -n 's/^exclude_paths:[[:space:]]*\[\(.*\)\].*/\1/p' .agent-scaffolding.yml | tr -d ' "'"'"'')
+  if [ -n "$raw_excludes" ]; then
+    IFS=',' read -r -a EXCLUDES <<<"$raw_excludes"
+  fi
+fi
+
+is_excluded() {
+  local path="$1"
+  case "$path" in
+    docs/skills/*/references/*) return 0 ;;
+  esac
+  if [ "${#EXCLUDES[@]}" -gt 0 ]; then
+    local e
+    for e in "${EXCLUDES[@]}"; do
+      [ -n "$e" ] || continue
+      e="${e%/}"
+      case "$path" in
+        "$e"|"$e"/*) return 0 ;;
+      esac
+    done
+  fi
+  return 1
+}
+
+echo "==> pre-commit: formatter checks"
+if [ -x scripts/formatter-agent.sh ]; then
+  scripts/formatter-agent.sh
+else
+  : # TODO: add formatter check command (or remove if no formatter is configured)
+fi
+
+echo "==> pre-commit: tests"
+if [ -x scripts/build-agent.sh ]; then
+  scripts/build-agent.sh
+else
+  : # TODO: add test command (or remove if no test framework is configured)
+fi
+
+echo "==> pre-commit: documentation checks"
+doc_fail=0
+
+# Check state-document headers (Purpose, Structure, Formatting Rules).
+for f in CHANGELOG.md docs/TASKS.md docs/VISION.md docs/DECISIONS.md docs/CONVENTIONS.md docs/ARCHITECTURE.md docs/THIRD-PARTY-NOTICES.md; do
+  [ -f "$f" ] || continue
+  body=$(strip_fences "$f")
+  p=$(grep -c '^## Purpose$' <<<"$body" || true)
+  s=$(grep -c '^## Structure$' <<<"$body" || true)
+  r=$(grep -c '^## Formatting Rules$' <<<"$body" || true)
+  order=$(grep -E '^## (Purpose|Structure|Formatting Rules)$' <<<"$body" | tr '\n' '|' || true)
+  if [ "$p$s$r" != "111" ] || [ "$order" != "## Purpose|## Structure|## Formatting Rules|" ]; then
+    echo "FAIL  $f: must start with one '## Purpose', '## Structure', and '## Formatting Rules' heading in sequence" >&2
+    doc_fail=1
+  fi
+done
+
+# Check staged files for broken relative links, backtick-wrapped links, template residue, and home paths.
+while IFS= read -r f; do
+  [ -n "$f" ] && [ -f "$f" ] || continue
+  is_excluded "$f" && continue
+
+  if grep -qE '/home/[a-z_][a-z0-9_-]*/|/Users/[A-Za-z]' "$f" 2>/dev/null; then
+    echo "FAIL  $f: contains an absolute home path (use ~ or \$HOME)" >&2
+    doc_fail=1
+  fi
+
+  case "$f" in
+    *.md)
+      body=$(strip_fences "$f")
+      dir=$(dirname "$f")
+      if strip_code <"$f" | grep -qE '\{\{[A-Z_]+\}\}|<!-- */?module:'; then
+        echo "FAIL  $f: contains unresolved template placeholders or module markers" >&2
+        doc_fail=1
+      fi
+      while IFS= read -r t; do
+        [ -n "$t" ] || continue
+        case "$t" in
+          http://*|https://*)
+            echo "FAIL  $f: backtick-wrapped link to $t" >&2
+            doc_fail=1
+            ;;
+          *)
+            if [ -e "$dir/${t%%#*}" ]; then
+              echo "FAIL  $f: backtick-wrapped link to $t" >&2
+              doc_fail=1
+            fi
+            ;;
+        esac
+      done < <(grep -oE '`\[[^]]*\]\([^)]*\)`' <<<"$body" | sed -E 's/.*\]\(([^)]*)\)`$/\1/' || true)
+      while IFS= read -r link; do
+        target=${link%%#*}
+        [ -z "$target" ] && continue
+        case "$target" in http://*|https://*|mailto:*|/*) continue ;; esac
+        if [ ! -e "$dir/$target" ]; then
+          echo "FAIL  $f: broken relative link -> $target" >&2
+          doc_fail=1
+        fi
+      done < <(strip_code <<<"$body" | grep -oE '\]\([^) ]+\)' | sed -E 's/^\]\(//; s/\)$//' || true)
+      ;;
+  esac
+done < <(git diff --cached --name-only --diff-filter=ACMR)
+
+# Specialize below to check ALL project documents against project conventions
+# and rules from other active skills (for example line length limits, prose line
+# packing, file headers, docs builds, or traceability checks).
+# TODO: add project-specific documentation checks across all documents (or remove if none apply)
+
+if [ "$doc_fail" -ne 0 ]; then
+  echo "PRE-COMMIT: FAIL" >&2
+  exit 1
+fi
+
+echo "PRE-COMMIT: PASS"
